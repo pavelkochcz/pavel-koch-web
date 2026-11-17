@@ -75,14 +75,12 @@
   <section class="contact page" id="kontakt">
     <h2>Kontakt</h2>
     <div class="contact-grid">
-      <form name="poptavka" method="POST" data-netlify="true" netlify-honeypot="obtizny" class="form" novalidate>
-        <input type="hidden" name="form-name" value="poptavka">
-        <p hidden><label>Nevyplňujte <input name="obtizny"></label></p>
+      <form name="poptavka" class="form" novalidate>
         <div class="field"><label for="f-jmeno">Jméno</label><input id="f-jmeno" name="jmeno" autocomplete="name" required></div>
         <div class="field"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
         <div class="field"><label for="f-dilo">Dílo</label><select id="f-dilo" name="dilo"><option value="">Obecný dotaz</option></select></div>
         <div class="field"><label for="f-zprava">Zpráva</label><textarea id="f-zprava" name="zprava" rows="4"></textarea></div>
-        <button class="btn" type="submit">Odeslat</button>
+        <button class="btn" type="submit">Napsat e-mail</button>
         <p class="form-msg" role="status" aria-live="polite"></p>
       </form>
       <address class="direct">
