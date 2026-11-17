@@ -112,16 +112,17 @@ function hang(sal, ART) {
   const justify = () => {
     const W = sal.clientWidth; if (!W) return;
     const one = ART.length === 1, mobile = W < 560, gap = mobile ? 16 : Math.max(28, W * .035);
+    const minW = mobile ? 0 : 150;
     const target = one ? Math.min(560, innerHeight * .62) : mobile ? W * .46 : Math.min(290, Math.max(200, W * .19)), perRow = mobile ? 2 : 4;
     let row = [], sum = 0;
     const flush = (last) => {
       if (!row.length) return;
-      let h = (W - 2 - gap * (row.length - 1)) / sum;
+      let h = (W - 2 - gap * (row.length - 1) - row.reduce((a, [, ar]) => a + Math.max(0, minW - ar * target), 0)) / sum;
       h = Math.min(h, target * (last ? 1.1 : 1.25));
       row.forEach(([p, ar]) => {
         const w = WORKS[p.dataset.k], im = $('img', p);
         const pw = ar * h, ph = h;
-        p.style.width = pw + 'px'; im.style.height = ph + 'px';
+        p.style.width = Math.max(pw, minW) + 'px'; $('.hung', p).style.width = pw + 'px'; im.style.height = ph + 'px';
         applyFrame(im, w, pw, ph); applyTilt($('.hung', p), w, pw, ph);
       });
       row = []; sum = 0;
@@ -130,7 +131,7 @@ function hang(sal, ART) {
       const w = WORKS[p.dataset.k], ar = arEff(w, AR[w.i] || .75);
       if (mobile && ar > 1.7) { flush(); row = [[p, ar]]; sum = ar; flush(); return; }
       row.push([p, ar]); sum += ar;
-      if (sum * target + gap * (row.length - 1) >= W * .9 || row.length === perRow) flush();
+      if (row.reduce((a, [, r]) => a + Math.max(r * target, minW), 0) + gap * (row.length - 1) >= W * .9 || row.length === perRow) flush();
     });
     flush(true);
   };
@@ -172,7 +173,7 @@ function showCat(slug) {
   g.innerHTML = T.map(p => {
     const n = p.works.length, cnt = p.video && !n ? 'video' : `${n} ${n === 1 ? 'dílo' : n < 5 ? 'díla' : 'děl'}`;
     return `<a class="tile" href="#projekt-${p.slug}"><span class="tile-img">${p.cover ? '<img alt="" loading="lazy">' : ''}${p.video ? '<i class="tile-play" aria-hidden="true"></i>' : ''}</span>
-      <span class="tile-t">${esc(p.title)}</span><span class="tile-m">${esc([p.year, cnt].filter(Boolean).join(' · '))}</span></a>`;
+      <span class="tile-cap"><span class="tile-n">${String(T.indexOf(p) + 1).padStart(2, '0')}</span><span class="tile-t">${esc(p.title)}</span><span class="tile-m">${esc([p.year, cnt].filter(Boolean).join(' · '))}</span></span></a>`;
   }).join('');
   $$('.tile', g).forEach((t, k) => { const im = $('img', t); if (im) safeImg(im, T[k].cover, 900, '(max-width:800px) 92vw, 30vw'); });
   const more = $('.cat-more', sec);
@@ -532,14 +533,8 @@ function scrollFx() {
   window._fx = run;
 }
 
-/* ---------- Den / Noc ---------- */
-{
-  const btn = $('.mode');
-  const set = on => { document.body.classList.toggle('dark', on); btn.setAttribute('aria-pressed', on); $('span', btn).textContent = on ? 'Den' : 'Noc'; btn.setAttribute('aria-label', on ? 'Denní prohlídka' : 'Noční prohlídka'); try { localStorage.setItem('mode', on ? 'dark' : 'light'); } catch {} };
-  let saved = null; try { saved = localStorage.getItem('mode'); } catch {}
-  if (saved === 'dark') set(true);
-  btn.onclick = () => set(!document.body.classList.contains('dark'));
-}
+/* ---------- Jen světlý režim (dřívější noční volba se maže) ---------- */
+try { localStorage.removeItem('mode'); } catch {}
 
 /* ---------- 3D deska ---------- */
 const B3 = $('.box3d', V), cube = $('.cube', B3);
