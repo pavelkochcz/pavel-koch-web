@@ -16,7 +16,7 @@ LAYOUT: „salonní“ zavěšení v nepravidelném rytmu, hodně vzduchu, mobil
 }
 *{box-sizing:border-box;min-width:0}
 [hidden]{display:none!important}
-html{scroll-behavior:smooth;scroll-padding-top:80px;overflow-x:clip}
+html{scroll-padding-top:80px;overflow-x:clip}
 body{margin:0;background:var(--wall);color:var(--ink);font:17px/1.6 var(--sans);overflow-x:clip;-webkit-font-smoothing:antialiased}
 img{display:block;max-width:100%}
 a{color:inherit}
@@ -320,9 +320,9 @@ img.fr{box-sizing:border-box;border-style:solid;border-color:#dcc39b;border-imag
 
 /* ===== Podpis jako logo ===== */
 .brand{display:block;line-height:0;padding:4px 0}
-.sig{display:block;width:74px;height:32px;background:currentColor;-webkit-mask:url(images/podpis.png) left center/contain no-repeat;mask:url(images/podpis.png) left center/contain no-repeat;transition:transform .5s var(--ease)}
-.brand:hover .sig{transform:rotate(-3deg) scale(1.04)}
-@media (max-width:800px){.sig{width:62px;height:27px}}
+.sig{display:block;width:118px;height:33px;background:currentColor;-webkit-mask:url(images/logo-maska.svg) left center/contain no-repeat;mask:url(images/logo-maska.svg) left center/contain no-repeat;transition:width .5s var(--ease),transform .5s var(--ease)}
+.brand:hover .sig{transform:scale(1.04)}
+@media (max-width:800px){.sig{width:96px;height:27px}}
 
 /* ===== Další tvorba ===== */
 .projects{padding:clamp(80px,10vw,150px) var(--pad)}
@@ -339,7 +339,7 @@ img.fr{box-sizing:border-box;border-style:solid;border-color:#dcc39b;border-imag
 
 /* ===== Stránky z menu (hlavní stránka = galerie) ===== */
 body:not([data-view=home]) .home{display:none!important}
-body:not([data-view=tvorba]) #tvorba,body:not([data-view=autor]) #autor,body:not([data-view=kontakt]) #kontakt{display:none!important}
+body:not([data-view=kategorie]) #kategorie,body:not([data-view=projekt]) #projekt,body:not([data-view=autor]) #autor,body:not([data-view=kontakt]) #kontakt{display:none!important}
 body:not([data-view]) .page{display:none!important}
 .page{min-height:calc(100svh - 90px);padding-top:clamp(120px,14vw,170px)!important;animation:pg .6s var(--ease)}
 @keyframes pg{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -432,3 +432,89 @@ body:not([data-view=vystava]) #vystava{display:none!important}
 }
 @media (hover:hover) and (pointer:fine){.ex-art,.ex-ith,.ex-photos button{cursor:none}}
 body[data-view=vystava] .top{background:color-mix(in srgb,var(--wall) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+
+/* ===== Nová struktura 2026-11: logo, úvod s videem, kategorie a složky ===== */
+.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.top .nav{gap:clamp(18px,2.2vw,34px)}
+.nav a{font-size:14px;white-space:nowrap}
+.top.over{color:#efe9e0;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.top.over .nav a[aria-current]{text-decoration:none}
+
+/* úvod: tmavá plocha s vyříznutým logem, skrz písmena běží video */
+.intro{--p:0;height:250vh;position:relative;background:#141416;color:#efe9e0}
+.intro-stick{position:sticky;top:0;height:100svh;overflow:hidden}
+.intro-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.intro-veil{position:absolute;inset:-1px;background:#141416;will-change:transform,opacity;contain:strict;
+  -webkit-mask:url(images/logo-maska.svg) center/var(--lw,84vw) auto no-repeat,linear-gradient(#000,#000);-webkit-mask-composite:xor;
+  mask:url(images/logo-maska.svg) center/var(--lw,84vw) auto no-repeat exclude,linear-gradient(#000,#000)}
+.intro-cap{position:absolute;left:var(--pad);bottom:clamp(28px,6vh,60px);margin:0;font-size:14px;letter-spacing:.08em;opacity:calc(1 - var(--p) * 5)}
+.intro-hint{position:absolute;right:var(--pad);bottom:clamp(28px,6vh,60px);margin:0;font-size:13px;color:#a39d93;opacity:calc(1 - var(--p) * 5)}
+.intro-hint::after{content:"";display:block;width:1px;height:38px;margin:10px auto 0;background:currentColor;animation:hint 2.2s var(--ease) infinite;transform-origin:top}
+@keyframes hint{0%{transform:scaleY(0)}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.intro-more{position:absolute;left:var(--pad);bottom:clamp(28px,6vh,60px);font-size:15px;text-decoration:none;color:#fff;padding:12px 20px;border:1px solid rgba(255,255,255,.55);border-radius:60px;background:rgba(20,20,22,.35);opacity:clamp(0,calc((var(--p) - .8) * 6),1);pointer-events:none;transition:background .3s}
+.intro.end .intro-more{pointer-events:auto}
+.intro-more:hover{background:rgba(20,20,22,.6)}
+@media (prefers-reduced-motion:reduce){.intro{height:100svh}.intro-hint{display:none}}
+
+/* rozcestník */
+.index{padding:clamp(90px,12vw,170px) var(--pad) clamp(70px,9vw,130px)}
+.index-k{margin:0 0 18px;font-size:14px;color:var(--mute);letter-spacing:.02em}
+.index-h{font-size:clamp(38px,5.6vw,84px);max-width:16ch;margin-bottom:clamp(50px,7vw,100px)}
+.index-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.index-list a{display:grid;grid-template-columns:70px 1fr auto;align-items:center;gap:20px;padding:clamp(20px,2.6vw,34px) 0;border-bottom:1px solid var(--line);text-decoration:none;position:relative}
+.ix-n{font-size:13px;color:var(--mute)}
+.ix-t{font-family:var(--serif);font-weight:300;font-size:clamp(28px,3.6vw,54px);line-height:1.05;transition:transform .6s var(--ease)}
+.ix-c{font-size:14px;color:var(--mute)}
+.ix-peek{position:absolute;right:clamp(130px,14vw,220px);top:50%;display:flex;gap:10px;transform:translateY(-50%);pointer-events:none}
+.ix-peek img{height:clamp(60px,6vw,96px);width:auto;opacity:0;transform:translateY(14px);transition:opacity .45s var(--ease),transform .6s var(--ease);box-shadow:0 10px 24px -14px rgba(0,0,0,.45)}
+.index-list a:hover .ix-t{transform:translateX(14px)}
+.index-list a:hover .ix-peek img{opacity:1;transform:none}
+.index-list a:hover .ix-peek img:nth-child(2){transition-delay:.06s}.index-list a:hover .ix-peek img:nth-child(3){transition-delay:.12s}
+@media (max-width:800px){.index-list a{grid-template-columns:44px 1fr}.ix-c{grid-column:2;margin-top:-14px}.ix-peek{display:none}}
+
+/* kategorie */
+.cat,.folder{padding-left:var(--pad);padding-right:var(--pad);padding-bottom:clamp(70px,9vw,130px)}
+.crumb{margin:0 0 14px;font-size:14px;color:var(--mute)}
+.crumb a{text-decoration:none;border-bottom:1px solid var(--line)}
+.crumb a:hover{border-color:currentColor;color:var(--ink)}
+.cat-title,.fold-title{font-size:clamp(44px,6.4vw,100px);max-width:18ch}
+.cat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(28px,3vw,48px) clamp(18px,2.2vw,34px);margin-top:clamp(44px,6vw,90px)}
+.tile{display:block;text-decoration:none}
+.tile-img{display:block;position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--wall2)}
+.tile-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s var(--ease),filter .6s}
+.tile:hover .tile-img img{transform:scale(1.045)}
+.tile-play{position:absolute;left:16px;bottom:16px;width:44px;height:44px;border-radius:50%;background:rgba(20,20,22,.55);backdrop-filter:blur(4px)}
+.tile-play::after{content:"";position:absolute;left:17px;top:14px;border-left:13px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent}
+.tile-t{display:block;margin-top:14px;font-family:var(--serif);font-size:clamp(21px,1.8vw,27px);font-weight:300;line-height:1.15}
+.tile-m{display:block;margin-top:4px;font-size:13px;color:var(--mute)}
+@media (max-width:900px){.cat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.cat-grid{grid-template-columns:1fr}}
+.cat-more{margin-top:clamp(60px,8vw,120px);max-width:1100px}
+.cat-grid[hidden]+.cat-more{margin-top:clamp(40px,5vw,70px)}
+.cat-more-h{font-size:clamp(26px,2.6vw,38px);margin-bottom:18px}
+.cat-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.cat-list li{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) auto;gap:8px 30px;padding:20px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.cat-list b{font-family:var(--serif);font-weight:300;font-size:clamp(20px,1.7vw,25px);line-height:1.2}
+.cat-list span{font-size:15px;color:var(--mute)}
+.cat-list a{font-size:14px;white-space:nowrap}
+@media (max-width:700px){.cat-list li{grid-template-columns:1fr}}
+
+/* složka projektu */
+.fold-head{max-width:900px;margin-bottom:clamp(44px,6vw,90px)}
+.fold-meta{display:grid;grid-template-columns:auto 1fr;gap:6px 22px;margin:28px 0 0;font-size:15px}
+.fold-meta dt{color:var(--mute)}.fold-meta dd{margin:0}
+.fold-text{font-family:var(--serif);font-size:clamp(20px,1.8vw,26px);font-weight:300;line-height:1.4;margin:26px 0 0;max-width:36ch}
+.fold-link{display:inline-block;margin-top:18px}
+.fold-video{margin-bottom:clamp(50px,7vw,100px);background:#141416}
+.fold-video video{display:block;width:100%;max-height:82svh;object-fit:contain}
+.folder .salon{margin-bottom:20px}
+.fold-nav{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-top:clamp(40px,6vw,90px);padding-top:28px;border-top:1px solid var(--line)}
+.fold-nav .back{margin-top:0}
+.fold-next{text-decoration:none;font-family:var(--serif);font-size:clamp(22px,2.2vw,32px);font-weight:300;text-align:right}
+.fold-next small{display:block;font-family:var(--sans);font-size:13px;color:var(--mute)}
+
+/* patička s logem */
+.foot{align-items:flex-end}
+.foot-logo{flex-basis:100%;display:block;margin-bottom:30px;opacity:.9}
+.foot-logo img{width:min(520px,70vw);height:auto}
+body.dark .foot-logo img{filter:invert(1)}

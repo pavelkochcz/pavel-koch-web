@@ -22,7 +22,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Dva billboardy kousek od Pobřežní",
@@ -46,7 +47,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Unavený spící bagr",
@@ -70,7 +72,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Stavební jáma a karavan",
@@ -94,7 +97,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Odpočívající trabant – Co tady ještě dělám?",
@@ -118,7 +122,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Cesta recyklace",
@@ -142,7 +147,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Soumrak nad vozovnou",
@@ -166,7 +172,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Mezi hřbitovy",
@@ -190,7 +197,8 @@
       "project": false,
       "frame": false,
       "tilt": 3.3,
-      "hidden": false
+      "hidden": false,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Staré žižkovské domy odcházejí",
@@ -214,7 +222,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Centrum levného nákupu",
@@ -238,7 +247,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Staré žižkovské domy u řeky",
@@ -262,7 +272,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Stará a nová synagoga",
@@ -286,7 +297,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Střešní pozorovatelé – Už mě nebaví.",
@@ -310,7 +322,8 @@
       "project": false,
       "frame": true,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Jeřáb",
@@ -334,7 +347,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Cirkus Cedrik",
@@ -358,7 +372,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Tři králové",
@@ -382,7 +397,8 @@
       "project": false,
       "frame": true,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Podzimní krajina I",
@@ -406,7 +422,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Krajina a venkov"
     },
     {
       "title": "Podzimní krajina II",
@@ -430,7 +447,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Krajina a venkov"
     },
     {
       "title": "Žena v modrém klobouku",
@@ -454,7 +472,8 @@
       "project": false,
       "frame": true,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Žena v hnědém klobouku",
@@ -478,7 +497,8 @@
       "project": false,
       "frame": true,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Muž s dětmi",
@@ -502,7 +522,8 @@
       "project": false,
       "frame": true,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Znamení ryb",
@@ -526,7 +547,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Zelená plocha",
@@ -550,7 +572,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": true
+      "hidden": true,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Tramvaj v noci",
@@ -574,7 +597,8 @@
       "project": false,
       "frame": false,
       "tilt": -3.3,
-      "hidden": false
+      "hidden": false,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Řada postav",
@@ -598,7 +622,8 @@
       "project": false,
       "frame": false,
       "tilt": -3.3,
-      "hidden": false
+      "hidden": false,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Palmovka",
@@ -622,7 +647,8 @@
       "project": false,
       "frame": false,
       "tilt": 3.3,
-      "hidden": false
+      "hidden": false,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Statek s červeným autem",
@@ -646,7 +672,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Krajina a venkov"
     },
     {
       "title": "Noc u mariánského sloupu",
@@ -670,7 +697,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Bazén",
@@ -694,7 +722,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Krajina a venkov"
     },
     {
       "title": "Vesnice",
@@ -718,7 +747,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Krajina a venkov"
     },
     {
       "title": "Noční vlak",
@@ -742,7 +772,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Noc s ostnatým drátem",
@@ -766,7 +797,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Krajina a venkov"
     },
     {
       "title": "Profil",
@@ -790,7 +822,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Amfory",
@@ -814,7 +847,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Jih a antika"
     },
     {
       "title": "Sloupy a turisté",
@@ -838,7 +872,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Jih a antika"
     },
     {
       "title": "Palmy",
@@ -862,7 +897,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Jih a antika"
     },
     {
       "title": "Domy s balkony",
@@ -886,7 +922,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Jih a antika"
     },
     {
       "title": "Granátová jablka",
@@ -910,7 +947,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Dva talíře",
@@ -934,7 +972,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Antické vázy",
@@ -958,7 +997,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Jih a antika"
     },
     {
       "title": "Pláž",
@@ -982,7 +1022,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Krajina a venkov"
     },
     {
       "title": "Plavčická věž v noci",
@@ -1006,7 +1047,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Krajina a venkov"
     },
     {
       "title": "Terakotové hlavy",
@@ -1030,7 +1072,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Jih a antika"
     },
     {
       "title": "Hrušky a plastika",
@@ -1054,7 +1097,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Dva džbány",
@@ -1078,7 +1122,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Chrám na kopci",
@@ -1102,7 +1147,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Jih a antika"
     },
     {
       "title": "Busta a vejce",
@@ -1126,7 +1172,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Zátiší a figura"
     },
     {
       "title": "Chrám a cypřiše",
@@ -1150,7 +1197,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Jih a antika"
     },
     {
       "title": "Letiště",
@@ -1174,7 +1222,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Centrální periferie"
     },
     {
       "title": "Střechy",
@@ -1198,7 +1247,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Jih a antika"
     },
     {
       "title": "Úzká ulice",
@@ -1222,7 +1272,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Jih a antika"
     },
     {
       "title": "Anděl Concorde",
@@ -1246,7 +1297,8 @@
       "project": false,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Socha"
     },
     {
       "title": "Obálky a ilustrace knih",
@@ -1272,7 +1324,8 @@
       "project": true,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Obálky a ilustrace knih"
     },
     {
       "title": "Návrh kapličky",
@@ -1297,7 +1350,8 @@
       "project": true,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Návrh kapličky"
     },
     {
       "title": "Novoroční přání",
@@ -1323,7 +1377,8 @@
       "project": true,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Novoroční přání"
     },
     {
       "title": "Z výstav",
@@ -1352,7 +1407,8 @@
       "project": true,
       "frame": false,
       "tilt": 0,
-      "hidden": false
+      "hidden": false,
+      "folder": "Na horizontu krajiny"
     }
   ]
 }

@@ -26,33 +26,38 @@ const dims = w => {
 const ratio = w => (Number(w.width) && Number(w.height)) ? w.width / w.height : null;
 const isFlat = w => !['Socha', 'Objekt', 'Keramika'].includes(w.category);
 
-let SITE = {}, WORKS = [];
+let SITE = {}, WORKS = [], PROJ = [];
+const setHash = h => { try { history.replaceState(null, '', location.pathname + location.search + h); } catch { if (location.hash !== h) location.hash = h || 'uvod'; } };
+const CATS = ['Malba a socha', 'Výstavy a expozice', 'Scénografie a film', 'Restaurování', 'Ilustrace a návrhy'];
+const catSlug = c => slugify(c);
 
 async function load() {
   const get = async p => { const r = await fetch(p, {cache: 'no-store'}); if (!r.ok) throw new Error(p); return r.json(); };
   try {
-    [SITE, {works: WORKS}] = await Promise.all([get('content/site.json'), get('content/works.json')]);
+    let P;
+    [SITE, {works: WORKS}, P] = await Promise.all([get('content/site.json'), get('content/works.json'), get('content/projects.json').catch(() => ({projects: []}))]);
+    PROJ = (P.projects || []).filter(p => p && p.title);
   } catch (e) { console.error('Obsah se nenačetl', e); return; }
   const used = {};
   WORKS = (WORKS || []).filter(w => w && !w.hidden && w.title && w.images && w.images.length).map((w, i) => {
     let s = slugify(w.title); used[s] = (used[s] || 0) + 1; if (used[s] > 1) s += '-' + used[s];
     return {...w, slug: s, i, group: w.theme || w.series || w.category || 'Ostatní'};
   });
-  fillSite(); buildWall(); buildSalon(); buildWalk(); buildProjects(); buildForm(); reveal(); scrollFx(); route(true); openFromHash();
+  PROJ.forEach(p => { p.slug = slugify(p.title); p.works = WORKS.filter(w => w.folder === p.title); p.cover = p.cover || (p.works[0] && p.works[0].images[0]) || ''; });
+  // díla bez složky nebo se složkou, která v seznamu projektů chybí, se nikde neztratí
+  const orphans = WORKS.filter(w => !PROJ.some(p => p.title === w.folder));
+  if (orphans.length) PROJ.push({title: 'Další díla', slug: 'dalsi-dila', category: 'Malba a socha', works: orphans, cover: orphans[0].images[0]});
+  fillSite(); buildNav(); buildIndex(); intro(); buildForm(); reveal(); scrollFx(); route(true); openFromHash();
 }
 
 function fillSite() {
   const S = SITE;
   $$('[data-name]').forEach(e => e.textContent = S.name || '');
   $$('[data-disciplines]').forEach(e => e.textContent = S.disciplines || '');
-  const t = $('[data-titles]'); if (t) t.textContent = [S.titles, S.name].filter(Boolean).join(' ');
+  $$('[data-titles]').forEach(t => t.textContent = [S.titles, S.name].filter(Boolean).join(' '));
   if (S.name) document.title = `${S.name} – ${(S.disciplines || '').toLowerCase().replace(/ · /g, ', ')}`;
-  if (S.statement) {
-    const st = $('.statement'); st.hidden = false;
-    $('[data-statement]').innerHTML = S.statement.split(/\s+/).map(w => `<span class="w">${esc(w)}</span>`).join(' ');
-  }
   $('[data-bio]').innerHTML = (S.bio || '').split(/\n\s*\n/).filter(Boolean).map(p => `<p>${esc(p)}</p>`).join('');
-  const q = $('[data-quote]'); if (S.quote) q.textContent = `„${S.quote}“`; else q.remove();
+  const q = $('[data-quote]'); if (q) { if (S.quote) q.textContent = `„${S.quote}“`; else q.remove(); }
   $('.cv').innerHTML = (S.cv || []).map(c => {
     const [main, role] = String(c.text || '').split(' – ');
     return `<li>${c.year ? `<b>${esc(c.year)}</b> ` : ''}${esc(main)}${role ? ` <em>– ${esc(role)}</em>` : ''}</li>`;
@@ -92,97 +97,22 @@ const applyTilt = (el, w, pw, ph) => {
   return extra;
 };
 
-function buildWall() {
-  const wall = $('.wall'), inner = $('.wall-in'), tip = $('.wall-tip');
-  const pool = WORKS.filter(w => !w.project && isFlat(w)).slice(0, 16);
-  if (!pool.length) { wall.remove(); $('.wall-note').remove(); return; }
-  if (pool.some(w => !ratio(w))) $('.wall-note').hidden = true;   // „skutečný poměr“ jen když známe rozměry všech
-  inner.innerHTML = pool.map(w => `<button class="hung is-flat" data-open="${w.slug}" aria-label="${esc(w.title)}"><img alt="${esc(w.title)}"></button>`).join('');
-  const imgs = $$('.hung img', inner);
-  const size = w => { if (ratio(w)) return [Number(w.width), Number(w.height)]; const ar = w._ar || 2; return ar >= 1 ? [32, 32 / ar] : [32 * ar, 32]; };
-  const layout = () => {
-    const W = wall.clientWidth, H = wall.clientHeight; if (!W || !H) return;
-    const vertical = W / H < 0.9;
-    const G = 5, LIM = vertical ? 92 : 68;
-    const A = w => size(w)[vertical ? 1 : 0], B = w => size(w)[vertical ? 0 : 1];
-    const groups = []; let g = null;
-    pool.forEach(w => {
-      const len = g ? g.len + G + B(w) : B(w);
-      if (!g || len > LIM) { g = {items: [w], len: B(w), th: A(w)}; groups.push(g); }
-      else { g.items.push(w); g.len = len; g.th = Math.max(g.th, A(w)); }
-    });
-    const total = groups.reduce((s, g) => s + g.th, 0) + G * 1.3 * (groups.length - 1);
-    const maxLen = Math.max(...groups.map(g => g.len));
-    const s = Math.min((vertical ? H : W) / total, (vertical ? W : H) / maxLen) * 0.94;
-    let pos = (vertical ? H : W) / 2 - total * s / 2;
-    groups.forEach(g => {
-      let along = ((vertical ? W : H) - g.len * s) / 2;
-      g.items.forEach(w => {
-        const el = inner.querySelector(`[data-open="${w.slug}"]`);
-        const a = A(w) * s, b = B(w) * s, off = (g.th * s - a) / 2;
-        const x = vertical ? along : pos + off, y = vertical ? pos + off : along;
-        const ew = vertical ? b : a, eh = vertical ? a : b;
-        Object.assign(el.style, {left: x + 'px', top: y + 'px', width: ew + 'px', height: eh + 'px'});
-        applyFrame($('img', el), w, ew, eh); el.style.setProperty('--tilt', tiltOf(w) + 'deg');
-        along += b + G * s;
-      });
-      pos += g.th * s + G * 1.3 * s;
-    });
-  };
-  let left = imgs.length;
-  imgs.forEach((im, k) => {
-    im.addEventListener('load', () => { pool[k]._ar = im.naturalWidth / im.naturalHeight; if (--left === 0) { layout(); show(); } }, {once: true});
-    im.addEventListener('error', () => { if (--left === 0) { layout(); show(); } }, {once: true});
-    safeImg(im, pool[k].images[0], 700, '20vw');
-  });
-  const show = () => $$('.hung', inner).forEach((b, k) => setTimeout(() => b.classList.add('in', 'lit'), reduced ? 0 : k * 45));
-  new ResizeObserver(layout).observe(wall);
-  setTimeout(() => { if (left > 0) { layout(); show(); } }, 3500);
-
-  if (fine) {
-    wall.addEventListener('mousemove', e => {
-      const r = wall.getBoundingClientRect();
-      if (!reduced) inner.style.transform = `translate(${((e.clientX - r.left) / r.width - .5) * -14}px, ${((e.clientY - r.top) / r.height - .5) * -10}px)`;
-      const h = e.target.closest('[data-open]');
-      if (h) {
-        const w = WORKS.find(x => x.slug === h.dataset.open);
-        tip.innerHTML = `<b>${esc(w.title)}</b>${[dims(w), w.year].filter(Boolean).map(esc).join(', ')}`;
-        tip.style.transform = `translate(${Math.min(e.clientX + 22, innerWidth - tip.offsetWidth - 12)}px, ${e.clientY + 26}px)`;
-        tip.classList.add('on');
-      } else tip.classList.remove('on');
-    });
-    wall.addEventListener('mouseleave', () => { inner.style.transform = ''; tip.classList.remove('on'); });
-  }
-}
-
 /* ---------- Díla ---------- */
-function buildSalon() {
-  const ART = WORKS.filter(w => !w.project);
-  const groups = [...new Set(ART.map(w => w.group))];
-  const f = $('.filters');
-  f.innerHTML = [['*', 'Vše', ART.length], ...groups.map(g => [g, g, ART.filter(w => w.group === g).length])]
-    .map(([k, l, n], i) => `<button role="tab" aria-selected="${i === 0}" data-f="${esc(k)}">${esc(l)}<sup>${n}</sup></button>`).join('');
-  if (groups.length < 2) f.hidden = true;
-  const sal = $('.salon');
+/* Zavěšení děl ve složce: zarovnané řady, díla ve skutečném poměru stran */
+function hang(sal, ART) {
   sal.innerHTML = ART.map(w => {
     const meta = [w.technique, dims(w)].filter(Boolean).map(esc).join(', ');
-    return `<figure class="piece" data-g="${esc(w.group)}" data-k="${w.i}">
+    return `<figure class="piece" data-k="${w.i}">
       <button class="hung ${isFlat(w) ? 'is-flat' : ''}" data-open="${w.slug}" aria-label="Otevřít: ${esc(w.title)}"><img alt="${esc(w.title)}" loading="lazy"></button>
       <figcaption class="label"><b>${esc(w.title)}</b>${w.year ? esc(w.year) + '<br>' : ''}${meta}${meta ? '<br>' : ''}${w.status ? `<span class="st"><i class="dot ${statusCls(w.status)}"></i>${esc(w.status)}</span>` : ''}</figcaption>
     </figure>`;
   }).join('');
   const AR = {};
   ART.forEach(w => { if (ratio(w)) AR[w.i] = ratio(w); });
-  $$('.piece', sal).forEach(p => {
-    const w = WORKS[p.dataset.k], im = $('img', p);
-    safeImg(im, w.images[0], 1200, '(max-width:800px) 92vw, 40vw');
-    im.addEventListener('load', () => { const a = im.naturalWidth / im.naturalHeight; if (!AR[w.i] || !isFlat(w) || !ratio(w)) { AR[w.i] = a; justify(); } });
-  });
-  /* zarovnané řady: každá řada stejně vysoká, díla v pravém poměru stran */
   const justify = () => {
     const W = sal.clientWidth; if (!W) return;
-    const mobile = W < 560, gap = mobile ? 16 : Math.max(28, W * .035), target = mobile ? W * .46 : Math.min(290, Math.max(200, W * .19)), perRow = mobile ? 2 : 4;
-    const items = $$('.piece', sal).filter(p => !p.classList.contains('gone'));
+    const one = ART.length === 1, mobile = W < 560, gap = mobile ? 16 : Math.max(28, W * .035);
+    const target = one ? Math.min(560, innerHeight * .62) : mobile ? W * .46 : Math.min(290, Math.max(200, W * .19)), perRow = mobile ? 2 : 4;
     let row = [], sum = 0;
     const flush = (last) => {
       if (!row.length) return;
@@ -196,7 +126,7 @@ function buildSalon() {
       });
       row = []; sum = 0;
     };
-    items.forEach(p => {
+    $$('.piece', sal).forEach(p => {
       const w = WORKS[p.dataset.k], ar = arEff(w, AR[w.i] || .75);
       if (mobile && ar > 1.7) { flush(); row = [[p, ar]]; sum = ar; flush(); return; }
       row.push([p, ar]); sum += ar;
@@ -204,14 +134,104 @@ function buildSalon() {
     });
     flush(true);
   };
-  justify(); new ResizeObserver(justify).observe(sal);
-  sal._justify = justify;
-  f.addEventListener('click', e => {
-    const b = e.target.closest('button'); if (!b) return;
-    $$('button', f).forEach(x => x.setAttribute('aria-selected', x === b));
-    $$('.piece', sal).forEach(p => p.classList.toggle('gone', !(b.dataset.f === '*' || p.dataset.g === b.dataset.f)));
-    sal._justify(); window._fx && window._fx();
+  $$('.piece', sal).forEach(p => {
+    const w = WORKS[p.dataset.k], im = $('img', p);
+    safeImg(im, w.images[0], 1200, '(max-width:800px) 92vw, 40vw');
+    im.addEventListener('load', () => { const a = im.naturalWidth / im.naturalHeight; if (!AR[w.i] || !isFlat(w) || !ratio(w)) { AR[w.i] = a; justify(); window._fx && window._fx(); } });
   });
+  justify();
+  if (sal._ro) sal._ro.disconnect();
+  sal._ro = new ResizeObserver(justify); sal._ro.observe(sal);
+}
+
+/* ---------- Lišta a rozcestník ---------- */
+const catsUsed = () => CATS.filter(c => PROJ.some(p => p.category === c));
+const tiles = p => !!(p.works.length || p.video);
+function buildNav() {
+  const links = catsUsed().map(c => `<a href="#kat-${catSlug(c)}">${esc(c)}</a>`).join('') + '<a href="#autor">O autorovi</a><a href="#kontakt">Kontakt</a>';
+  $$('[data-catnav]').forEach(n => n.innerHTML = links);
+}
+function buildIndex() {
+  $('[data-index]').innerHTML = catsUsed().map((c, k) => {
+    const L = PROJ.filter(p => p.category === c), withImg = L.filter(p => p.cover);
+    const n = L.length, word = n === 1 ? 'projekt' : n < 5 ? 'projekty' : 'projektů';
+    return `<li><a href="#kat-${catSlug(c)}"><span class="ix-n">${String(k + 1).padStart(2, '0')}</span><span class="ix-t">${esc(c)}</span><span class="ix-c">${n} ${word}</span>
+      <span class="ix-peek" aria-hidden="true">${withImg.slice(0, 3).map(p => `<img alt="" loading="lazy" data-src="${esc(p.cover)}">`).join('')}</span></a></li>`;
+  }).join('');
+  $$('[data-index] img').forEach(im => safeImg(im, im.dataset.src, 500, '160px'));
+}
+
+/* ---------- Kategorie: mřížka projektů (složek), pod ní realizace bez fotek ---------- */
+function showCat(slug) {
+  const c = CATS.find(x => catSlug(x) === slug); if (!c) return false;
+  const sec = $('.cat'), L = PROJ.filter(p => p.category === c), T = L.filter(tiles), R = L.filter(p => !tiles(p));
+  $('.crumb', sec).innerHTML = `<a href="#uvod">Úvod</a> / ${esc(c)}`;
+  $('.cat-title', sec).textContent = c;
+  const g = $('.cat-grid', sec);
+  g.hidden = !T.length;
+  g.innerHTML = T.map(p => {
+    const n = p.works.length, cnt = p.video && !n ? 'video' : `${n} ${n === 1 ? 'dílo' : n < 5 ? 'díla' : 'děl'}`;
+    return `<a class="tile" href="#projekt-${p.slug}"><span class="tile-img">${p.cover ? '<img alt="" loading="lazy">' : ''}${p.video ? '<i class="tile-play" aria-hidden="true"></i>' : ''}</span>
+      <span class="tile-t">${esc(p.title)}</span><span class="tile-m">${esc([p.year, cnt].filter(Boolean).join(' · '))}</span></a>`;
+  }).join('');
+  $$('.tile', g).forEach((t, k) => { const im = $('img', t); if (im) safeImg(im, T[k].cover, 900, '(max-width:800px) 92vw, 30vw'); });
+  const more = $('.cat-more', sec);
+  more.hidden = !R.length;
+  $('.cat-more-h', sec).textContent = T.length ? 'Další realizace' : 'Realizace';
+  $('.cat-list', sec).innerHTML = R.map(p => `<li><b>${esc(p.title)}</b><span>${esc([p.place, p.role].filter(Boolean).join(' · '))}</span>${p.link ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">web výstavy ↗</a>` : ''}</li>`).join('');
+  return true;
+}
+
+/* ---------- Složka projektu ---------- */
+let curProj = null;
+function showProject(slug) {
+  const p = PROJ.find(x => x.slug === slug); if (!p) return false;
+  curProj = p;
+  const sec = $('.folder');
+  $('.crumb', sec).innerHTML = `<a href="#uvod">Úvod</a> / <a href="#kat-${catSlug(p.category)}">${esc(p.category)}</a>`;
+  $('.fold-title', sec).textContent = p.title;
+  $('.fold-meta', sec).innerHTML = [['Rok', p.year], ['Místo', p.place], ['Role', p.role]].filter(r => r[1]).map(([a, b]) => `<dt>${a}</dt><dd>${esc(b)}</dd>`).join('');
+  const tx = $('.fold-text', sec); tx.textContent = p.text || ''; tx.hidden = !p.text;
+  const ln = $('.fold-link', sec); ln.hidden = !p.link; if (p.link) { ln.href = p.link; ln.textContent = 'Web výstavy ↗'; }
+  const fv = $('.fold-video', sec), v = $('video', fv);
+  fv.hidden = !p.video;
+  if (p.video) { if (v.dataset.src !== p.video) { v.dataset.src = p.video; v.src = rel(p.video); v.poster = p.cover ? rel(p.cover) : ''; } v.play().catch(() => {}); } else { v.pause(); }
+  const sal = $('.salon', sec); sal.hidden = !p.works.length;
+  hang(sal, p.works);
+  const sib = PROJ.filter(x => x.category === p.category && tiles(x)), k = sib.indexOf(p);
+  const nx = sib.length > 1 ? sib[(k + 1) % sib.length] : null;
+  $('.fold-nav', sec).innerHTML = `<a class="back" href="#kat-${catSlug(p.category)}">← ${esc(p.category)}</a>${nx ? `<a class="fold-next" href="#projekt-${nx.slug}"><small>Další složka</small>${esc(nx.title)} →</a>` : ''}`;
+  return true;
+}
+
+/* ---------- Úvod: video uvnitř loga, posunem se logo rozevře ---------- */
+function intro() {
+  const sec = $('.intro'), veil = $('.intro-veil'), vid = $('.intro-vid');
+  if (!sec) return;
+  vid.play && vid.play().catch(() => {});
+  const lay = () => {
+    const vw = innerWidth, vh = innerHeight;
+    const L = Math.min(vw * (vw < 700 ? .9 : .84), 1500), H = L * 218 / 791;
+    sec.style.setProperty('--lw', L + 'px');
+    // bod uvnitř dříku písmene H – kolem něj se logo zvětšuje, až otevře celé video
+    veil.style.transformOrigin = `${(vw - L) / 2 + L * .8104}px ${(vh - H) / 2 + H * .74}px`;
+  };
+  const run = () => {
+    if (view !== 'home') return;
+    const r = sec.getBoundingClientRect(), span = sec.offsetHeight - innerHeight;
+    const p = reduced ? 0 : clamp(-r.top / Math.max(1, span));
+    const op = 1 - clamp((p - .55) / .3);
+    veil.style.transform = p > 0 ? `scale(${(1 + 13 * p * p).toFixed(3)})` : '';
+    veil.style.opacity = op.toFixed(3);
+    veil.style.visibility = op <= 0 ? 'hidden' : '';
+    sec.style.setProperty('--p', p.toFixed(3)); sec.classList.toggle('end', p > .85);
+    top.classList.toggle('over', r.bottom > 60);
+    if (r.bottom < 0) { if (!vid.paused) vid.pause(); } else if (vid.paused) vid.play().catch(() => {});
+  };
+  lay(); run();
+  addEventListener('resize', () => { lay(); run(); });
+  addEventListener('scroll', run, {passive: true});
+  sec._run = run;
 }
 
 function fitViewer() {
@@ -223,22 +243,6 @@ function fitViewer() {
   applyFrame(vimg, w, W, H);
 }
 addEventListener('resize', () => { if (!V.hidden) fitViewer(); });
-
-/* ---------- Další tvorba ---------- */
-function buildProjects() {
-  const P = WORKS.filter(w => w.project), sec = $('.projects');
-  if (!P.length) return;
-  sec.hidden = false;
-  $('.proj-grid', sec).innerHTML = P.map(w => `<figure class="proj">
-    <button class="proj-img" data-open="${w.slug}" aria-label="Otevřít: ${esc(w.title)}"><img alt="${esc(w.title)}" loading="lazy"></button>
-    <figcaption><b>${esc(w.title)}</b><span>${w.images.length} ${w.images.length > 4 ? 'fotografií' : w.images.length > 1 ? 'fotografie' : 'fotografie'}</span></figcaption></figure>`).join('');
-  // náhled vždy celý, v jeho skutečném poměru stran (nic se neořezává)
-  $$('.proj', sec).forEach((f, k) => {
-    const im = $('img', f);
-    im.addEventListener('load', () => f.style.setProperty('--r', (im.naturalWidth / im.naturalHeight).toFixed(3)), {once: true});
-    safeImg(im, P[k].images[0], 900, '(max-width:800px) 60vw, 30vw');
-  });
-}
 
 /* ---------- Detail díla ---------- */
 const V = $('.viewer');
@@ -252,13 +256,14 @@ function openWork(slug, push = true, srcImg = null) {
   if (V.hidden) { lastFocus = document.activeElement; V.hidden = false; document.body.style.overflow = 'hidden'; requestAnimationFrame(() => V.classList.add('open')); }
   const cu = $('.cursor'); if (cu) cu.classList.remove('big');
   cur = k; imgIdx = 0; render();
-  if (push && location.hash !== '#dilo-' + slug) history.replaceState(null, '', '#dilo-' + slug);
+  if (push && location.hash !== '#dilo-' + slug) setHash('#dilo-' + slug);
   V.focus({preventScroll: true});
 }
 function closeWork() {
   V.classList.remove('open'); hideScale();
   setTimeout(() => { V.hidden = true; document.body.style.overflow = ''; }, reduced ? 0 : 400);
-  history.replaceState(null, '', location.pathname + location.search + (view !== 'home' ? '#' + view : ''));
+  setHash(view !== 'home' ? '#' + view : '');
+  if (view.startsWith('projekt-')) document.title = `${curProj ? curProj.title + ' – ' : ''}${SITE.name || ''}`;
   lastFocus && lastFocus.focus && lastFocus.focus({preventScroll: true});
 }
 function setZoom(on, e) {
@@ -299,7 +304,7 @@ function showImg() {
 }
 function render() {
   const w = WORKS[cur];
-  $('.v-cat', V).textContent = [w.category, w.series].filter(Boolean).join(' · ');
+  $('.v-cat', V).textContent = [w.folder || w.category].filter(Boolean).join(' · ');
   $('#v-title').textContent = w.title;
   const rows = [['Rok', w.year], ['Místo', w.place], ['Technika', w.technique], ['Rozměr', dims(w) && dims(w) + (w.depth ? ' (š × v × h)' : ' (š × v)')], ['Cena', w.price ? w.price : w.status === 'Dostupné' ? 'na dotaz' : '']];
   $('.v-meta', V).innerHTML = rows.filter(r => r[1]).map(([a, b]) => `<dt>${a}</dt><dd>${esc(b)}</dd>`).join('');
@@ -317,7 +322,7 @@ function render() {
   showImg();
   if (!$('.scale', V).hidden) showScale();
 }
-const peers = () => WORKS.filter(x => !!x.project === !!WORKS[cur].project);
+const peers = () => { const f = WORKS[cur].folder; const L = WORKS.filter(x => x.folder === f); return L.length ? L : WORKS; };
 const step = d => { const L = peers(), k = L.indexOf(WORKS[cur]); openWork(L[(k + d + L.length) % L.length].slug); };
 
 document.addEventListener('click', e => {
@@ -339,23 +344,37 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') step(1);
   if (e.key === 'ArrowLeft') step(-1);
 });
-addEventListener('hashchange', () => { route(); openFromHash(); });
-/* ---------- Stránky: hlavní stránka je jen galerie, ostatní se otevírají z menu ---------- */
-const PAGES = ['tvorba', 'autor', 'kontakt'];
+function goHome() {
+  homeY = 0;
+  if (view !== 'home' || location.hash) { if (location.hash === '#uvod') route(); else location.hash = 'uvod'; }
+  scrollTo({top: 0, behavior: 'instant'});
+  requestAnimationFrame(() => scrollTo({top: 0, behavior: 'instant'}));
+}
+addEventListener('hashchange', () => { if (location.hash === '#uvod' || location.hash === '#top') homeY = 0; route(); openFromHash(); });
+/* ---------- Stránky: úvod, kategorie (#kat-…), složka projektu (#projekt-…), autor, kontakt ---------- */
 let view = 'home', homeY = 0;
 function route(first) {
   const h = decodeURIComponent(location.hash.slice(1));
-  if (h.startsWith('dilo-')) { if (first) document.body.dataset.view = view; return; }
-  const next = PAGES.includes(h) ? h : 'home';
+  if (h.startsWith('dilo-')) {
+    // dílo otevřené odkazem: pod něj otevřít jeho složku
+    if (first) { const w = WORKS.find(x => 'dilo-' + x.slug === h), p = w && PROJ.find(x => x.title === w.folder); if (p && showProject(p.slug)) { view = 'projekt-' + p.slug; document.body.dataset.view = 'projekt'; } else document.body.dataset.view = view; }
+    return;
+  }
+  let next = 'home', kind = 'home';
+  if (h === 'autor' || h === 'kontakt') { next = kind = h; }
+  else if (h.startsWith('kat-') && showCat(h.slice(4))) { next = h; kind = 'kategorie'; }
+  else if (h.startsWith('projekt-') && showProject(h.slice(8))) { next = h; kind = 'projekt'; }
   const changed = next !== view || first;
   if (next !== view && view === 'home') homeY = scrollY;
-  view = next; document.body.dataset.view = next;
-  $$('.nav a, .mnav a').forEach(a => a.toggleAttribute('aria-current', a.getAttribute('href') === '#' + next || (next === 'home' && a.getAttribute('href') === '#dila' && h === 'dila')));
-  if (next !== 'home') { if (changed) scrollTo({top: 0, behavior: 'instant'}); return; }
-  if (changed) { const s = $('.salon'); s && s._justify && s._justify(); const w = $('.walk'); w && w._lay && w._lay(); window._fx && window._fx(); }
-  const el = h && document.getElementById(h);
-  if (el) requestAnimationFrame(() => el.scrollIntoView({behavior: changed || reduced ? 'instant' : 'smooth'}));
-  else if (changed && !first) scrollTo({top: homeY, behavior: 'instant'});
+  view = next; document.body.dataset.view = kind;
+  if (kind !== 'projekt') { const v = $('.fold-video video'); v && v.pause(); }
+  const cat = kind === 'kategorie' ? h.slice(4) : kind === 'projekt' && curProj ? catSlug(curProj.category) : '';
+  $$('.nav a, .mnav a').forEach(a => a.toggleAttribute('aria-current', a.getAttribute('href') === '#' + next || (cat && a.getAttribute('href') === '#kat-' + cat)));
+  const nm = SITE.name || 'Pavel Koch';
+  document.title = kind === 'kategorie' ? `${$('.cat-title').textContent} – ${nm}` : kind === 'projekt' ? `${curProj.title} – ${nm}` : kind === 'autor' ? `O autorovi – ${nm}` : kind === 'kontakt' ? `Kontakt – ${nm}` : `${nm} – malba, výstavní architektura, scénografie`;
+  if (next !== 'home') { top.classList.remove('over'); if (changed) scrollTo({top: 0, behavior: 'instant'}); window._fx && window._fx(); return; }
+  if (changed && !first) scrollTo({top: homeY, behavior: 'instant'});
+  const s = $('.intro'); s && s._run && s._run();
 }
 function openFromHash() {
   const m = location.hash.match(/^#dilo-(.+)$/);
@@ -443,7 +462,7 @@ function buildForm() {
 
 /* ---------- Pohyb a navigace ---------- */
 function reveal() {
-  $$('.works-head h2, .author h2, .contact h2, .outro h2').forEach(h => {
+  $$('.author h2, .contact h2, .index-h').forEach(h => {
     h.innerHTML = h.innerHTML.split(/<br\s*\/?>/).map(l => `<span class="mask"><span>${l}</span></span>`).join('');
     if (h.closest('.hero')) setTimeout(() => $$('.mask', h).forEach(m => m.classList.add('in')), reduced ? 0 : 200);
     else h.classList.add('rv');
@@ -465,8 +484,7 @@ addEventListener('scroll', () => {
 }, {passive: true});
 $('.brand').addEventListener('click', e => {
   e.preventDefault(); if (!V.hidden) closeWork();
-  if (view !== 'home') { history.pushState(null, '', location.pathname + location.search); route(); }
-  scrollTo({top: 0, behavior: reduced ? 'auto' : 'smooth'});
+  goHome();
 });
 const mb = $('.menu-btn'), mn = $('.mnav');
 mb.onclick = () => { const o = mn.hidden; mn.hidden = !o; mb.setAttribute('aria-expanded', o); mb.textContent = o ? 'Zavřít' : 'Menu'; document.body.style.overflow = o ? 'hidden' : ''; };
@@ -480,8 +498,8 @@ if (fine) {
     mx = e.clientX; my = e.clientY;
     const t = e.target, show = V.hidden && !t.closest('input, textarea, select');
     c.classList.toggle('on', show);
-    c.classList.toggle('big', show && !!t.closest('.hung, .proj-img') && !t.closest('.wall'));
-    c.classList.toggle('lt', !!t.closest('.walk'));
+    c.classList.toggle('big', show && !!t.closest('.hung'));
+    c.classList.toggle('lt', !!t.closest('.intro'));
     if (!run) { run = true; requestAnimationFrame(loop); }
   }, {passive: true});
   document.addEventListener('mouseleave', () => c.classList.remove('on'));
@@ -493,12 +511,12 @@ const ease = t => 1 - Math.pow(1 - t, 3);
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const FX = [];
 function scrollFx() {
-  $$('.salon .piece').forEach(p => {
-    const h = $('.hung', p), im = $('img', h), lab = $('.label', p);
-    FX.push(() => {
-      if (p.classList.contains('gone')) return;
+  FX.push(() => {
+    if (document.body.dataset.view !== 'projekt') return;
+    $$('.folder .piece').forEach(p => {
+      const h = $('.hung', p), im = $('img', h), lab = $('.label', p);
       const r = p.getBoundingClientRect(), vh = innerHeight;
-      const lag = (r.left / innerWidth) * 60;                       // vpravo o kousek později = vlna přes řadu
+      const lag = (r.left / innerWidth) * 60;
       const e = reduced ? 1 : ease(clamp((vh - r.top - lag) / (vh * .55)));
       const k = 1 - e;
       h.style.clipPath = k < .001 ? 'none' : `inset(${k * 18}% ${k * 10}% ${k * 18}% ${k * 10}%)`;
@@ -512,99 +530,6 @@ function scrollFx() {
   const req = () => { if (!tick) { tick = true; requestAnimationFrame(run); } };
   addEventListener('scroll', req, {passive: true}); addEventListener('resize', req); run();
   window._fx = run;
-}
-
-/* ---------- Noční procházka cyklem ---------- */
-function buildWalk() {
-  const cfg = SITE.walk || {}, sec = $('.walk');
-  const list = WORKS.filter(w => !w.project && isFlat(w) && ((cfg.series || []).includes(w.series) || (cfg.series || []).includes(w.theme)));
-  if (list.length < 2) return;
-  sec.hidden = false;
-  $('.walk-title', sec).textContent = cfg.title || '';
-  $('.walk-text', sec).textContent = cfg.text || '';
-  $('.walk-track', sec).innerHTML = list.map(w => `<figure class="wk"><i class="lamp"></i>
-    <button class="hung" data-open="${w.slug}" aria-label="${esc(w.title)}"><img alt="${esc(w.title)}" draggable="false"></button>
-    <figcaption class="cap"><b>${esc(w.title)}</b>${[w.place, w.year, dims(w)].filter(Boolean).map(esc).join(' · ')}</figcaption></figure>`).join('');
-  const wimgs = $$('.wk img', sec);
-  wimgs.forEach((im, k) => {
-    const w = list[k];
-    im.addEventListener('load', () => {
-      if (w.frame) { const h = im.clientHeight, W = arEff(w, im.naturalWidth / im.naturalHeight) * h; im.style.width = W + 'px'; applyFrame(im, w, W, h); }
-      applyTilt(im.parentElement, w, im.offsetWidth, im.offsetHeight);
-      sec._lay && sec._lay();
-    });
-  });
-  // obrázky cyklu se načtou, až se k sekci přiblížíte (rychlejší start stránky)
-  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); wimgs.forEach((im, k) => safeImg(im, list[k].images[0], 1000, '60vw')); } }, {rootMargin: '900px 0px'});
-  io.observe(sec);
-  walkCarousel(sec);
-}
-
-/* Karusel: vodorovný posun (šipky, tažení myší, swipe, klávesy); stránka se dál scrolluje normálně */
-function walkCarousel(sec) {
-  const T = $('.walk-track', sec), items = $$('.wk', sec), bar = $('.walk-bar', sec), cnt = $('.walk-count', sec);
-  const prev = $('.walk-btn.prev', sec), next = $('.walk-btn.next', sec);
-  const center = it => it.offsetLeft + it.offsetWidth / 2 - T.clientWidth / 2;
-  let active = 0;
-  const update = () => {
-    const max = T.scrollWidth - T.clientWidth, mid = T.scrollLeft + T.clientWidth / 2;
-    bar.style.setProperty('--p', max > 0 ? clamp(T.scrollLeft / max) : 0);
-    let best = 0, bd = 1e9;
-    items.forEach((it, k) => {
-      const d = Math.abs(it.offsetLeft + it.offsetWidth / 2 - mid);
-      if (d < bd) { bd = d; best = k; }
-      it.style.setProperty('--l', reduced ? 1 : (1 - clamp(d / (T.clientWidth * .45))) ** 1.6);
-    });
-    active = best;
-    cnt.textContent = `${best + 1} / ${items.length}`;
-    prev.disabled = T.scrollLeft < 4; next.disabled = T.scrollLeft > max - 4;
-  };
-  const lay = () => {
-    const W = T.clientWidth, f = items[0], l = items[items.length - 1];
-    T.style.paddingLeft = Math.max(0, (W - f.offsetWidth) / 2) + 'px';
-    T.style.paddingRight = Math.max(0, (W - l.offsetWidth) / 2) + 'px';
-    if (!T._init) { T._init = true; T.scrollLeft = 0; }
-    update();
-  };
-  sec._lay = lay;
-  const go = k => { k = clamp(k, 0, items.length - 1); T.scrollTo({left: center(items[k]), behavior: reduced ? 'auto' : 'smooth'}); };
-  prev.onclick = () => go(active - 1);
-  next.onclick = () => go(active + 1);
-  T.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); go(active + (e.key === 'ArrowRight' ? 1 : -1)); } });
-  let tick = false;
-  T.addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(() => { tick = false; update(); }); } }, {passive: true});
-  addEventListener('resize', lay);
-  // tažení myší (dotyk a trackpad posouvají nativně)
-  let d = null, moved = false;
-  T.addEventListener('pointerdown', e => {
-    if (e.pointerType !== 'mouse' || e.button !== 0) return;
-    d = {x: e.clientX, s: T.scrollLeft, t: performance.now(), v: 0}; moved = false;
-  });
-  addEventListener('pointermove', e => {
-    if (!d) return;
-    const dx = e.clientX - d.x;
-    if (!moved && Math.abs(dx) > 5) { moved = true; T.classList.add('drag'); }
-    if (!moved) return;
-    const now = performance.now(), nl = d.s - dx;
-    d.v = (nl - T.scrollLeft) / Math.max(1, now - d.t); d.t = now;
-    T.scrollLeft = nl;
-  });
-  const end = () => {
-    if (!d) return;
-    const v = d.v; d = null;
-    if (!moved) return;
-    T.classList.remove('drag');
-    // dojezd na nejbližší obraz ve směru pohybu
-    const mid = T.scrollLeft + T.clientWidth / 2 + v * 180;
-    let best = 0, bd = 1e9;
-    items.forEach((it, k) => { const dd = Math.abs(it.offsetLeft + it.offsetWidth / 2 - mid); if (dd < bd) { bd = dd; best = k; } });
-    go(best);
-    setTimeout(() => { moved = false; }, 50);
-  };
-  addEventListener('pointerup', end); addEventListener('pointercancel', end);
-  T.addEventListener('click', e => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
-  T.addEventListener('dragstart', e => e.preventDefault());
-  lay();
 }
 
 /* ---------- Den / Noc ---------- */

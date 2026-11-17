@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pavel Koch – malba, socha</title>
+<title>Pavel Koch – malba, výstavní architektura, scénografie</title>
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
 <meta name="description" content="Pavel Koch – výtvarník, scénograf a výstavní architekt. Malé obrazy na deskách, barevné plochy a plastiky. Díla k prohlédnutí i k zakoupení.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,119 +15,51 @@
 <div class="cursor" aria-hidden="true"><span>prohlédnout</span></div>
 
 <header class="top">
-  <a class="brand" href="#top" aria-label="Pavel Koch – zpět nahoru"><span class="sig" aria-hidden="true"></span></a>
-  <nav class="nav" aria-label="Hlavní">
-    <a href="#dila">Díla</a>
-    <a href="#vystava">Výstava</a>
-    <a href="#tvorba">Další tvorba</a>
-    <a href="#autor">O autorovi</a>
-    <a href="#kontakt">Kontakt</a>
-  </nav>
+  <a class="brand" href="#uvod" aria-label="Pavel Koch – úvod"><span class="sig" aria-hidden="true"></span></a>
+  <nav class="nav" aria-label="Hlavní" data-catnav></nav>
   <button class="mode" aria-pressed="false" aria-label="Noční prohlídka"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span>Noc</span></button>
   <button class="menu-btn" aria-expanded="false" aria-controls="mnav">Menu</button>
 </header>
-<div class="mnav" id="mnav" hidden>
-  <a href="#dila">Díla</a><a href="#vystava">Výstava</a><a href="#tvorba">Další tvorba</a><a href="#autor">O autorovi</a><a href="#kontakt">Kontakt</a>
-</div>
+<div class="mnav" id="mnav" hidden data-catnav></div>
 
 <main id="top">
-  <section class="hero home">
-    <div class="hero-text">
-      <h1 data-name>Pavel Koch</h1>
-      <p class="disc"><span data-disciplines>Malba · socha · výstavní architektura</span></p>
+  <section class="intro home" aria-label="Úvod">
+    <div class="intro-stick">
+      <video class="intro-vid" muted loop playsinline autoplay preload="auto" poster="images/video/karluv-most.jpg"><source src="images/video/karluv-most.mp4" type="video/mp4"></video>
+      <div class="intro-veil" aria-hidden="true"></div>
+      <h1 class="sr-only" data-name>Pavel Koch</h1>
+      <p class="intro-cap">Výtvarník · scénograf · výstavní architekt</p>
+      <p class="intro-hint" aria-hidden="true">Posuňte dolů</p>
+      <a class="intro-more" href="#projekt-pruvod-pres-karluv-most">Průvod přes Karlův most · model, 9 m <span aria-hidden="true">→</span></a>
     </div>
-    <div class="wall" aria-label="Výběr obrazů zavěšených jako na výstavě">
-      <div class="wall-in"></div>
-      <div class="wall-tip" aria-hidden="true"></div>
-    </div>
-    <p class="wall-note">Obrazy jsou zavěšené ve skutečném vzájemném poměru velikostí.</p>
   </section>
 
-  <section class="statement home" hidden>
-    <p data-statement></p>
+  <section class="index home" aria-label="Rozcestník">
+    <p class="index-k" data-titles></p>
+    <h2 class="index-h">Malba, výstavní architektura<br>a scénografie</h2>
+    <ol class="index-list" data-index></ol>
   </section>
 
-  <section class="works home" id="dila">
-    <div class="works-head">
-      <h2>Díla</h2>
-      <div class="filters" role="tablist" aria-label="Filtrovat díla"></div>
+  <section class="cat page" id="kategorie" aria-live="polite">
+    <div class="cat-head"><p class="crumb"></p><h2 class="cat-title"></h2></div>
+    <div class="cat-grid"></div>
+    <div class="cat-more"><h3 class="cat-more-h"></h3><ol class="cat-list"></ol></div>
+  </section>
+
+  <section class="folder page" id="projekt">
+    <div class="fold-head">
+      <p class="crumb"></p>
+      <h2 class="fold-title"></h2>
+      <dl class="fold-meta"></dl>
+      <p class="fold-text"></p>
+      <a class="fold-link outro-link" target="_blank" rel="noopener" hidden></a>
     </div>
+    <div class="fold-video" hidden><video controls muted loop playsinline preload="metadata"></video></div>
     <div class="salon"></div>
-    <p class="demo-note">Náhled: názvy bez štítku z výstavy jsou pracovní a doplní je autor.</p>
+    <nav class="fold-nav" aria-label="Další složky"></nav>
   </section>
 
-  <section class="walk home" id="prochazka" hidden>
-    <div class="walk-head">
-      <p class="walk-kicker">Cyklus</p>
-      <h2 class="walk-title"></h2>
-      <p class="walk-text"></p>
-    </div>
-    <div class="walk-track" tabindex="0" aria-label="Obrazy cyklu, posun do strany"></div>
-    <div class="walk-ctrl">
-      <button class="walk-btn prev" aria-label="Předchozí obraz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <div class="walk-bar"><i></i></div>
-      <span class="walk-count" aria-live="polite"></span>
-      <button class="walk-btn next" aria-label="Další obraz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
-    </div>
-  </section>
-
-  <section class="outro home" aria-label="Kontakt">
-    <h2>Máte zájem o dílo,<br>nebo se chcete přijít podívat do ateliéru?</h2>
-    <div class="outro-row">
-      <a class="btn" href="#kontakt">Napsat autorovi</a>
-      <a class="outro-link" href="#vystava">Projít výstavu</a>
-      <a class="outro-link" href="#autor">O autorovi</a>
-      <a class="outro-link" href="#tvorba">Další tvorba</a>
-    </div>
-  </section>
-
-  <section class="expo page" id="vystava" aria-label="Výstava">
-    <div class="ex-run">
-      <div class="ex-stick">
-        <div class="ex-stage"><div class="ex-cam"><div class="ex-room"></div></div></div>
-        <div class="ex-intro">
-          <p class="ex-k">Výstava</p>
-          <h2>Projděte se<br>mezi obrazy</h2>
-          <p class="ex-hint">Posouvejte dolů</p>
-        </div>
-        <div class="ex-bar"><i></i></div>
-      </div>
-    </div>
-    <div class="ex-text">
-      <h2>Zavěšení patří k obrazu.</h2>
-      <p>Pavel Koch věší své malé desky jako výstavní architekt: v hloučcích, v dlouhé řadě a některé úmyslně našikmo. Obrazy pak spolu mluví a stěna se stává další vrstvou výstavy.</p>
-    </div>
-    <div class="ex-list">
-      <h2 class="ex-lh">Na stěnách visí</h2>
-      <div class="ex-items"></div>
-    </div>
-    <div class="ex-real">
-      <h2>Skutečné výstavy</h2>
-      <div class="ex-shows">
-        <article class="ex-show">
-          <p class="ex-k">JanáčekArt</p>
-          <h3>Prago|CITY</h3>
-          <p>Malé formáty o Praze: stanice metra, výlohy, noční ulice a krátké městské výjevy. Věcné vyprávění o místech, ve kterém přesto zůstává jejich poezie.</p>
-          <a class="outro-link" href="https://www.janacekart.cz/pavel-koch-pragocity" target="_blank" rel="noopener">Výstava na webu galerie ↗</a>
-        </article>
-        <article class="ex-show">
-          <p class="ex-k">Galerie Ateliér Síň, Telč · 18.–30. 8. 2024</p>
-          <h3>Na horizontu krajiny</h3>
-          <p>Společná výstava s Martinem Findeisem.</p>
-          <div class="ex-photos"></div>
-        </article>
-      </div>
-      <div class="outro-row ex-cta"><a class="btn" href="#kontakt">Napsat autorovi</a><a class="outro-link" href="#dila">Zpět na díla</a></div>
-    </div>
-  </section>
-
-  <section class="projects page" id="tvorba" hidden>
-    <div class="works-head"><h2>Další tvorba</h2><p class="proj-sub">Obálky knih, návrhy, novoroční přání a výstavy</p></div>
-    <div class="proj-grid"></div>
-    <a class="back" href="#dila">← Zpět na díla</a>
-  </section>
-
-  <section class="author page" id="autor">
+<section class="author page" id="autor">
     <figure class="portrait"><div class="portrait-empty">Portrét autora<br><small>nahraje se v administraci</small></div></figure>
     <div class="author-text">
       <p class="titles" data-titles></p>
@@ -136,7 +69,7 @@
       <h3>Vybrané realizace</h3><p class="cv-sub">Výstavní architektura, scénografie a malba pro Pražský hrad, muzea a galerie</p>
       <ol class="cv"></ol>
       <dl class="facts"><dt>Film</dt><dd data-film></dd><dt>Vzdělání</dt><dd data-education></dd></dl>
-      <a class="back" href="#dila">← Zpět na díla</a>
+      <a class="back" href="#uvod">← Zpět na úvod</a>
     </div>
   </section>
 
@@ -159,13 +92,14 @@
         <a class="big" data-phone></a>
         <a class="ig" data-instagram target="_blank" rel="noopener"></a>
         <p class="loc" data-location></p>
-        <a class="back" href="#dila">← Zpět na díla</a>
+        <a class="back" href="#uvod">← Zpět na úvod</a>
       </address>
     </div>
   </section>
 </main>
 
 <footer class="foot">
+  <a class="foot-logo" href="#uvod" aria-label="Pavel Koch – úvod"><img src="images/logo.svg" alt="Koch"></a>
   <span>© <span data-year></span> <span data-name>Pavel Koch</span></span>
   <span>Všechna díla jsou chráněna autorským právem.</span>
 </footer>
