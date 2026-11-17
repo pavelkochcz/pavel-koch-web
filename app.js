@@ -214,8 +214,8 @@ function intro() {
     const vw = innerWidth, vh = innerHeight;
     const L = Math.min(vw * (vw < 700 ? .9 : .84), 1500), H = L * 218 / 791;
     sec.style.setProperty('--lw', L + 'px');
-    // bod uvnitř dříku písmene H – kolem něj se logo zvětšuje, až otevře celé video
-    veil.style.transformOrigin = `${(vw - L) / 2 + L * .8104}px ${(vh - H) / 2 + H * .74}px`;
+    // bod uprostřed loga (uvnitř písmene, nejtlustší místo) – kolem něj se logo zvětšuje, až otevře celé video
+    veil.style.transformOrigin = `${(vw - L) / 2 + L * .4861}px ${(vh - H) / 2 + H * .4839}px`;
   };
   const run = () => {
     if (view !== 'home') return;
@@ -226,7 +226,7 @@ function intro() {
     veil.style.opacity = op.toFixed(3);
     veil.style.visibility = op <= 0 ? 'hidden' : '';
     sec.style.setProperty('--p', p.toFixed(3)); sec.classList.toggle('end', p > .85);
-    top.classList.toggle('over', r.bottom > 60);
+    top.classList.toggle('over', r.bottom > 60); top.classList.toggle('vid', op < .5);
     if (r.bottom < 0) { if (!vid.paused) vid.pause(); } else if (vid.paused) vid.play().catch(() => {});
   };
   lay(); run();
