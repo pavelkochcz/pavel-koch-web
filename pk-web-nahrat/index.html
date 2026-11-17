@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pavel Koch – malba, výstavní architektura, scénografie</title>
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Pavel Koch – výtvarník, scénograf a výstavní architekt. Malé obrazy na deskách, barevné plochy a plastiky. Díla k prohlédnutí i k zakoupení.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="cursor" aria-hidden="true"><span>prohlédnout</span></div>
+
+<header class="top">
+  <a class="brand" href="#uvod" aria-label="Pavel Koch – úvod"><span class="sig" aria-hidden="true"></span></a>
+  <nav class="nav" aria-label="Hlavní" data-catnav></nav>
+  <button class="mode" aria-pressed="false" aria-label="Noční prohlídka"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span>Noc</span></button>
+  <button class="menu-btn" aria-expanded="false" aria-controls="mnav">Menu</button>
+</header>
+<div class="mnav" id="mnav" hidden data-catnav></div>
+
+<main id="top">
+  <section class="intro home" aria-label="Úvod">
+    <div class="intro-stick">
+      <video class="intro-vid" muted loop playsinline autoplay preload="auto" poster="images/video/karluv-most.jpg"><source src="images/video/karluv-most.mp4" type="video/mp4"></video>
+      <div class="intro-veil" aria-hidden="true"></div>
+      <h1 class="sr-only" data-name>Pavel Koch</h1>
+      <p class="intro-cap">Výtvarník · scénograf · výstavní architekt</p>
+      <p class="intro-hint" aria-hidden="true">Posuňte dolů</p>
+      <a class="intro-more" href="#projekt-pruvod-pres-karluv-most">Průvod přes Karlův most · model, 9 m <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <section class="index home" aria-label="Rozcestník">
+    <p class="index-k" data-titles></p>
+    <h2 class="index-h">Malba, výstavní architektura<br>a scénografie</h2>
+    <ol class="index-list" data-index></ol>
+  </section>
+
+  <section class="cat page" id="kategorie" aria-live="polite">
+    <div class="cat-head"><p class="crumb"></p><h2 class="cat-title"></h2></div>
+    <div class="cat-grid"></div>
+    <div class="cat-more"><h3 class="cat-more-h"></h3><ol class="cat-list"></ol></div>
+  </section>
+
+  <section class="folder page" id="projekt">
+    <div class="fold-head">
+      <p class="crumb"></p>
+      <h2 class="fold-title"></h2>
+      <dl class="fold-meta"></dl>
+      <p class="fold-text"></p>
+      <a class="fold-link outro-link" target="_blank" rel="noopener" hidden></a>
+    </div>
+    <div class="fold-video" hidden><video controls muted loop playsinline preload="metadata"></video></div>
+    <div class="salon"></div>
+    <nav class="fold-nav" aria-label="Další složky"></nav>
+  </section>
+
+<section class="author page" id="autor">
+    <figure class="portrait"><div class="portrait-empty">Portrét autora<br><small>nahraje se v administraci</small></div></figure>
+    <div class="author-text">
+      <p class="titles" data-titles></p>
+      <h2>O autorovi</h2>
+      <div class="bio" data-bio></div>
+      <blockquote data-quote></blockquote>
+      <h3>Vybrané realizace</h3><p class="cv-sub">Výstavní architektura, scénografie a malba pro Pražský hrad, muzea a galerie</p>
+      <ol class="cv"></ol>
+      <dl class="facts"><dt>Film</dt><dd data-film></dd><dt>Vzdělání</dt><dd data-education></dd></dl>
+      <a class="back" href="#uvod">← Zpět na úvod</a>
+    </div>
+  </section>
+
+  <section class="contact page" id="kontakt">
+    <h2>Kontakt</h2>
+    <div class="contact-grid">
+      <form name="poptavka" method="POST" data-netlify="true" netlify-honeypot="obtizny" class="form" novalidate>
+        <input type="hidden" name="form-name" value="poptavka">
+        <p hidden><label>Nevyplňujte <input name="obtizny"></label></p>
+        <div class="field"><label for="f-jmeno">Jméno</label><input id="f-jmeno" name="jmeno" autocomplete="name" required></div>
+        <div class="field"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="f-dilo">Dílo</label><select id="f-dilo" name="dilo"><option value="">Obecný dotaz</option></select></div>
+        <div class="field"><label for="f-zprava">Zpráva</label><textarea id="f-zprava" name="zprava" rows="4"></textarea></div>
+        <button class="btn" type="submit">Odeslat</button>
+        <p class="form-msg" role="status" aria-live="polite"></p>
+      </form>
+      <address class="direct">
+        <p class="small">Napište nebo zavolejte přímo</p>
+        <a class="big" data-email></a>
+        <a class="big" data-phone></a>
+        <a class="ig" data-instagram target="_blank" rel="noopener"></a>
+        <p class="loc" data-location></p>
+        <a class="back" href="#uvod">← Zpět na úvod</a>
+      </address>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <a class="foot-logo" href="#uvod" aria-label="Pavel Koch – úvod"><img src="images/logo.svg" alt="Koch"></a>
+  <span>© <span data-year></span> <span data-name>Pavel Koch</span></span>
+  <span>Všechna díla jsou chráněna autorským právem.</span>
+</footer>
+
+<!-- Detail díla -->
+<div class="viewer" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="v-title" hidden>
+  <div class="v-stage">
+    <div class="v-img"><img alt=""><div class="loupe" aria-hidden="true"></div>
+      <div class="box3d" hidden><div class="cube"><i class="f front"></i><i class="f back"></i><i class="f left"></i><i class="f right"></i><i class="f top"></i><i class="f bottom"></i></div></div>
+      <div class="compare" hidden><img class="c-before" alt=""><div class="c-after"><img alt=""></div><div class="c-handle" role="slider" tabindex="0" aria-label="Posun srovnání" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span></span></div><p class="c-lab l"></p><p class="c-lab r">Hotové dílo</p></div>
+    </div>
+    <div class="v-thumbs"></div>
+    <p class="v-hint">Najeďte myší pro lupu · kliknutím přiblížíte</p>
+  </div>
+  <aside class="v-info">
+    <p class="v-cat"></p>
+    <h2 id="v-title"></h2>
+    <dl class="v-meta"></dl>
+    <p class="v-status"></p>
+    <p class="v-desc"></p>
+    <div class="v-actions">
+      <button class="btn" data-inquire>Mám zájem o dílo</button>
+      <div class="v-tools">
+        <button class="chip" data-3d>Otočit desku ve 3D</button>
+        <button class="chip" data-process>Jak vznikalo</button>
+        <button class="chip" data-scale>Velikost v prostoru</button>
+      </div>
+    </div>
+    <div class="v-nav">
+      <button data-prev aria-label="Předchozí dílo">← Předchozí</button>
+      <span class="v-count"></span>
+      <button data-next aria-label="Další dílo">Další →</button>
+    </div>
+  </aside>
+  <button class="v-close" aria-label="Zavřít">Zavřít</button>
+
+  <div class="scale" hidden>
+    <div class="scale-room">
+      <div class="scale-wall"></div>
+      <div class="scale-floor"></div>
+      <img class="scale-art" alt="">
+      <div class="scale-plinth"></div>
+      <svg class="scale-person" viewBox="0 0 60 175" aria-hidden="true"><path d="M30 4a11 11 0 1 1 0 22a11 11 0 1 1 0-22zM17 30h26c6 0 9 4 9 10l-3 50c0 3-2 5-5 5l-2 76c0 2-2 4-4 4h-4c-2 0-3-2-3-4l-1-60h-2l-1 60c0 2-1 4-3 4h-4c-2 0-4-2-4-4l-2-76c-3 0-5-2-5-5L8 40c0-6 3-10 9-10z"/></svg>
+    </div>
+    <p class="scale-cap"></p>
+    <button class="btn ghost scale-back">Zpět na detail</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
