@@ -1,0 +1,57 @@
+{
+  "name": "Pavel Koch",
+  "titles": "Mgr. akad. mal., MgA.",
+  "disciplines": "Malba · socha · výstavní architektura",
+  "statement": "",
+  "bio": "Výtvarník, scénograf a výstavní architekt. Více než 39 let spolupracuje s Pražským hradem, muzei a galeriemi v České republice i v zahraničí.\n\nNa pražské Akademii výtvarných umění studoval klasickou malbu u prof. Berana, poté konceptuální tvorbu a nová média; v roce 1998 absolvoval intermediální tvorbu u prof. Milana Knížáka. Vystudoval také divadelní scénografii na DAMU. Jeho obrazy jsou k vidění například ve filmu Petra Zelenky Ztraceni v Mnichově.\n\nDnes maluje malé obrazy na deskách. Cyklus Centrální periferie zachycuje pražská místa, která nikdo nefotí: noční ulici, billboardy, spící bagr. Maluje i krajinu, figuru a zátiší, ilustruje knihy. Dříve vznikaly velké barevné plochy.",
+  "portrait": "/images/autor/pavel-koch.jpg",
+  "quote": "",
+  "cv": [
+    {
+      "year": "2024",
+      "text": "Na horizontu krajiny (s Martinem Findeisem), Galerie Ateliér Síň, Telč – výstava"
+    },
+    {
+      "year": "",
+      "text": "Příběh Pražského hradu, Starý královský palác – spoluautor expozice, hlavní výtvarník doprovodného programu"
+    },
+    {
+      "year": "",
+      "text": "Karel IV. 700, GNM Nürnberg – návrh a realizace pohřebního průvodu Karla IV."
+    },
+    {
+      "year": "",
+      "text": "Císař Karel IV. 1316–2016, Valdštejnská jízdárna, Praha"
+    },
+    {
+      "year": "",
+      "text": "Kouzelný svět Petra Síse, Jízdárna Pražského hradu – architektonické řešení výstavy"
+    },
+    {
+      "year": "",
+      "text": "A. Born – Od La Fontaina po Livingstona, Císařská konírna Pražského hradu – kurátor, architekt výstavy"
+    },
+    {
+      "year": "",
+      "text": "Mystérium Staroměstské věže, Staroměstská mostecká věž – autorská malba"
+    },
+    {
+      "year": "",
+      "text": "Krušnohoří / Erzgebirge – Umění pozdního středověku, OM Chomutov – architektonické a grafické řešení"
+    }
+  ],
+  "film": "Hra na hrad, Ztraceni v Mnichově, Children of Dune, The Boy Called Christmas, The Wheel of Time",
+  "education": "Akademie výtvarných umění v Praze · DAMU Praha, divadelní scénografie · SUPŠ Brno",
+  "email": "pavelkoch@seznam.cz",
+  "phone": "+420 604 652 778",
+  "instagram": "",
+  "location": "Ateliér Praha, návštěva po domluvě",
+  "walk": {
+    "title": "Centrální periferie",
+    "text": "Noční i denní Praha z míst, kolem kterých každý den chodíme a nikdo je nefotí.",
+    "series": [
+      "Centrální periferie",
+      "Město"
+    ]
+  }
+}
