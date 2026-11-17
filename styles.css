@@ -274,18 +274,19 @@ body:not([data-view]) .page{display:none!important}
 .sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .top .nav{gap:clamp(18px,2.2vw,34px)}
 .nav a{font-size:14px;white-space:nowrap}
-.top.over{color:#efe9e0;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.top.over{color:var(--ink);background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .top.over .nav a[aria-current]{text-decoration:none}
+.top.over.vid{color:#efe9e0}
 
 /* úvod: tmavá plocha s vyříznutým logem, skrz písmena běží video */
-.intro{--p:0;height:250vh;position:relative;background:#141416;color:#efe9e0}
+.intro{--p:0;height:250vh;position:relative;background:var(--wall);color:var(--ink)}
 .intro-stick{position:sticky;top:0;height:100svh;overflow:hidden}
 .intro-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.intro-veil{position:absolute;inset:-1px;background:#141416;will-change:transform,opacity;contain:strict;
+.intro-veil{position:absolute;inset:-1px;background:var(--wall);will-change:transform,opacity;contain:strict;
   -webkit-mask:url(images/logo-maska.svg) center/var(--lw,84vw) auto no-repeat,linear-gradient(#000,#000);-webkit-mask-composite:xor;
   mask:url(images/logo-maska.svg) center/var(--lw,84vw) auto no-repeat exclude,linear-gradient(#000,#000)}
 .intro-cap{position:absolute;left:var(--pad);bottom:clamp(28px,6vh,60px);margin:0;font-size:14px;letter-spacing:.08em;opacity:calc(1 - var(--p) * 5)}
-.intro-hint{position:absolute;right:var(--pad);bottom:clamp(28px,6vh,60px);margin:0;font-size:13px;color:#a39d93;opacity:calc(1 - var(--p) * 5)}
+.intro-hint{position:absolute;right:var(--pad);bottom:clamp(28px,6vh,60px);margin:0;font-size:13px;color:var(--mute);opacity:calc(1 - var(--p) * 5)}
 .intro-hint::after{content:"";display:block;width:1px;height:38px;margin:10px auto 0;background:currentColor;animation:hint 2.2s var(--ease) infinite;transform-origin:top}
 @keyframes hint{0%{transform:scaleY(0)}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 .intro-more{position:absolute;left:var(--pad);bottom:clamp(28px,6vh,60px);font-size:15px;text-decoration:none;color:#fff;padding:12px 20px;border:1px solid rgba(255,255,255,.55);border-radius:60px;background:rgba(20,20,22,.35);opacity:clamp(0,calc((var(--p) - .8) * 6),1);pointer-events:none;transition:background .3s}
