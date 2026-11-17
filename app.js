@@ -5,8 +5,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* Obrázky: na Netlify se zmenšují přes jejich Image CDN, jinde (náhled) se použije originál. */
-const useCdn = !/localhost|127\.0|claude|usercontent|^$/.test(location.hostname) && location.protocol.startsWith('http');
+/* Obrázky: Netlify Image CDN jen na *.netlify.app; na GitHub Pages a v náhledu se použije originál. */
+const useCdn = /\.netlify\.app$/.test(location.hostname);
 const rel = src => String(src || '').replace(/^\//, '');
 const img = (src, w) => useCdn && src.startsWith('/') ? `/.netlify/images?url=${encodeURIComponent(src)}&w=${w}&q=82` : rel(src);
 const srcset = src => useCdn && src.startsWith('/') ? [500, 900, 1400, 2000].map(w => `${img(src, w)} ${w}w`).join(', ') : '';
@@ -451,13 +451,11 @@ function buildForm() {
     e.preventDefault();
     const n = $('#f-jmeno'), em = $('#f-email');
     if (!n.value.trim() || !/^\S+@\S+\.\S+$/.test(em.value)) { msg.textContent = 'Vyplňte prosím jméno a platný e-mail.'; (!n.value.trim() ? n : em).focus(); return; }
-    const btn = $('button[type=submit]', form); btn.disabled = true; msg.textContent = 'Odesílám…';
-    try {
-      const r = await fetch('/', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(new FormData(form)).toString()});
-      if (!r.ok) throw 0;
-      form.reset(); msg.textContent = 'Děkujeme, zpráva dorazila. Ozveme se co nejdřív.';
-    } catch { msg.textContent = `Zprávu se nepodařilo odeslat. Napište prosím přímo na ${SITE.email || 'e-mail níže'}.`; }
-    btn.disabled = false;
+    const dilo = $('#f-dilo').value, zprava = $('#f-zprava').value.trim();
+    const subject = dilo ? `Zájem o dílo: ${dilo}` : 'Dotaz z webu pavelkoch.cz';
+    const body = [zprava, '', `${n.value.trim()}`, em.value.trim()].join('\n');
+    location.href = `mailto:${SITE.email || 'pavelkoch@seznam.cz'}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    msg.textContent = `Otevírá se váš e-mail s připravenou zprávou. Pokud se neotevřel, napište prosím na ${SITE.email || 'pavelkoch@seznam.cz'}.`;
   });
 }
 
