@@ -402,7 +402,7 @@ body,.author,.tile-img{background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .foot-logo{display:none}
 
 /* ===== Časová osa (2026-11-24) ===== */
-body:not([data-view=cas]) #cas{display:none!important}
+body:not([data-view=cas]):not([data-view=home]) #cas{display:none!important}
 .time{padding-left:var(--pad);padding-right:var(--pad);padding-bottom:clamp(70px,9vw,130px)}
 .time-lead{margin:22px 0 0;max-width:46ch;color:var(--mute);font-size:16px}
 .time-rail{position:sticky;top:70px;z-index:5;margin:clamp(40px,6vw,80px) calc(var(--pad) * -1) 0;padding:38px var(--pad) 26px;background:color-mix(in srgb,var(--wall) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow-x:auto;scrollbar-width:none;transition:top .5s var(--ease)}
@@ -463,3 +463,18 @@ body:not([data-view=cas]) #cas{display:none!important}
 
 .tr-dot span{background:var(--wall);padding:2px 6px;z-index:1}
 .tr-dot:hover,.tr-dot.cur{z-index:2}
+
+/* ===== Úvod: místo rozcestníku časová osa (2026-11-24) ===== */
+.index{display:none!important}
+body[data-view=home] #cas{animation:none;min-height:0}
+body[data-view=home] #cas .crumb{display:none}
+
+/* ===== Bez patkového písma (2026-11-24): táta nemá rád patky – zůstávají jen drobně u názvů děl ===== */
+:root{--serif:var(--sans);--accent:"Newsreader",Georgia,"Times New Roman",serif}
+h1,h2,h3,.cat-title,.fold-title,.author h2,.contact h2,.ty-y,.ix-t{font-weight:300;letter-spacing:-.035em}
+blockquote,.v-info h2,.tile-t,.portrait-empty,.tr-dot span,.cursor span,.field input,.field select,.field textarea,.mnav a,.fold-next,.direct .big,.cat-list b,.ty-items a,.ty-items b,.fold-text{font-style:normal}
+.tile-t,.cat-list b,.ty-items a,.ty-items b,.fold-next,.direct .big,.fold-text{letter-spacing:-.015em}
+.tr-dot span{font-weight:400;font-size:14px;letter-spacing:.02em}
+.cursor span{font-size:13px;letter-spacing:.02em}
+.label b{font:italic 400 17px/1.25 var(--accent)}
+.ty-w span{font:italic 400 14px/1.3 var(--accent)}
