@@ -129,6 +129,16 @@ collections:
               - { name: text, label: Text (role oddělte pomlčkou „ – “), widget: string }
           - { name: film, label: Film, widget: string, required: false }
           - { name: education, label: Vzdělání, widget: string, required: false }
+          - name: milestones
+            label: Časová osa – působení a studium
+            label_singular: položka
+            widget: list
+            required: false
+            summary: "{{fields.year}} · {{fields.text}}"
+            fields:
+              - { name: year, label: "Rok nebo období (např. 2000–2005)", widget: string }
+              - { name: kind, label: "Druh (např. Působení, Studium)", widget: string, required: false }
+              - { name: text, label: Text, widget: string }
           - name: walk
             label: Noční procházka (vodorovná sekce)
             widget: object
