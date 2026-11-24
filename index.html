@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pavel Koch – malba, výstavní architektura, scénografie</title>
-<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="images/favicon.svg?v=ko" type="image/svg+xml">
 <meta name="description" content="Pavel Koch – výtvarník, scénograf a výstavní architekt. Malé obrazy na deskách, barevné plochy a plastiky. Díla k prohlédnutí i k zakoupení.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Hanken+Grotesk:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20261117b">
+<link rel="stylesheet" href="styles.css?v=20261124a">
 </head>
 <body>
 <div class="cursor" aria-hidden="true"><span>prohlédnout</span></div>
@@ -58,6 +58,16 @@
     <nav class="fold-nav" aria-label="Další složky"></nav>
   </section>
 
+<section class="time page" id="cas" aria-labelledby="cas-h">
+<div class="time-head">
+<p class="crumb"><a href="#uvod">Úvod</a> / Časová osa</p>
+<h2 class="cat-title" id="cas-h">Tvorba v čase</h2>
+<p class="time-lead">Výstavy, expozice, film, působení i obrazy rok po roku. Klikněte na rok na ose nebo v seznamu.</p>
+</div>
+<nav class="time-rail" aria-label="Roky"></nav>
+<ol class="time-list"></ol>
+</section>
+
 <section class="author page" id="autor">
     <figure class="portrait"><div class="portrait-empty">Portrét autora<br><small>nahraje se v administraci</small></div></figure>
     <div class="author-text">
@@ -96,8 +106,7 @@
 </main>
 
 <footer class="foot">
-  <a class="foot-logo" href="#uvod" aria-label="Pavel Koch – úvod"><img src="images/logo.svg" alt="Koch"></a>
-  <span>© <span data-year></span> <span data-name>Pavel Koch</span></span>
+    <span>© <span data-year></span> <span data-name>Pavel Koch</span></span>
   <span>Všechna díla jsou chráněna autorským právem.</span>
 </footer>
 
@@ -146,6 +155,6 @@
   </div>
 </div>
 
-<script src="app.js?v=20261117b"></script>
+<script src="app.js?v=20261124a"></script>
 </body>
 </html>
