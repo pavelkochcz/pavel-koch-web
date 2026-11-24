@@ -252,7 +252,7 @@ const b = e.target.closest('.tr-dot'); if (!b) return;
 const li = $('#rok-' + b.dataset.y, list); toggle(li, true);
 li.scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block: 'start'});
 });
-toggle($('.ty', list).find(li => $('.ty-works', li)) || $('.ty', list), true); // otevřený je nejnovější rok s obrazy
+toggle($$('.ty', list).find(li => $('.ty-works', li)) || $('.ty', list), true); // otevřený je nejnovější rok s obrazy
 // rok, který je právě na obrazovce, se na ose zvýrazní
 const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; $$('.tr-dot', rail).forEach(b => b.classList.toggle('cur', b.dataset.y === e.target.dataset.y)); const c = $('.tr-dot.cur', rail); if (c && rail.scrollWidth > rail.clientWidth) rail.scrollTo({left: c.offsetLeft - rail.clientWidth / 2, behavior: 'smooth'}); }), {rootMargin: '-45% 0px -50% 0px'});
 $$('.ty', list).forEach(li => io.observe(li));
