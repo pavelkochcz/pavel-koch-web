@@ -460,3 +460,6 @@ body:not([data-view=cas]) #cas{display:none!important}
 .ty-w{max-width:42vw}.ty-w img{max-width:42vw;height:96px}
 }
 @media (prefers-reduced-motion:reduce){.ty-c{transform:none}.ty.open .ty-w{animation:none}}
+
+.tr-dot span{background:var(--wall);padding:2px 6px;z-index:1}
+.tr-dot:hover,.tr-dot.cur{z-index:2}
