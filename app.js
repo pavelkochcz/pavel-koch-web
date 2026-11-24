@@ -30,6 +30,9 @@ let SITE = {}, WORKS = [], PROJ = [];
 const setHash = h => { try { history.replaceState(null, '', location.pathname + location.search + h); } catch { if (location.hash !== h) location.hash = h || 'uvod'; } };
 const CATS = ['Malba a socha', 'Výstavy a expozice', 'Scénografie a film', 'Restaurování', 'Ilustrace a návrhy'];
 const catSlug = c => slugify(c);
+/* řazení podle let: nejnovější nahoře, bez roku na konci, jinak původní pořadí */
+const yr = x => { const m = String((x && x.year) ?? '').match(/\d{4}/); return m ? +m[0] : 0; };
+const byYear = L => L.map((x, i) => [x, i]).sort((a, b) => (yr(b[0]) - yr(a[0])) || (a[1] - b[1])).map(a => a[0]);
 
 async function load() {
   const get = async p => { const r = await fetch(p, {cache: 'no-store'}); if (!r.ok) throw new Error(p); return r.json(); };
@@ -43,11 +46,11 @@ async function load() {
     let s = slugify(w.title); used[s] = (used[s] || 0) + 1; if (used[s] > 1) s += '-' + used[s];
     return {...w, slug: s, i, group: w.theme || w.series || w.category || 'Ostatní'};
   });
-  PROJ.forEach(p => { p.slug = slugify(p.title); p.works = WORKS.filter(w => w.folder === p.title); p.cover = p.cover || (p.works[0] && p.works[0].images[0]) || ''; });
+  PROJ.forEach(p => { p.slug = slugify(p.title); const L = WORKS.filter(w => w.folder === p.title); p.cover = p.cover || (L[0] && L[0].images[0]) || ''; p.works = byYear(L); });
   // díla bez složky nebo se složkou, která v seznamu projektů chybí, se nikde neztratí
   const orphans = WORKS.filter(w => !PROJ.some(p => p.title === w.folder));
-  if (orphans.length) PROJ.push({title: 'Další díla', slug: 'dalsi-dila', category: 'Malba a socha', works: orphans, cover: orphans[0].images[0]});
-  fillSite(); buildNav(); buildIndex(); intro(); buildForm(); reveal(); scrollFx(); route(true); openFromHash();
+  if (orphans.length) PROJ.push({title: 'Další díla', slug: 'dalsi-dila', category: 'Malba a socha', works: byYear(orphans), cover: orphans[0].images[0]});
+  fillSite(); buildNav(); buildIndex(); buildTime(); intro(); buildForm(); reveal(); scrollFx(); route(true); openFromHash();
 }
 
 function fillSite() {
@@ -58,7 +61,7 @@ function fillSite() {
   if (S.name) document.title = `${S.name} – ${(S.disciplines || '').toLowerCase().replace(/ · /g, ', ')}`;
   $('[data-bio]').innerHTML = (S.bio || '').split(/\n\s*\n/).filter(Boolean).map(p => `<p>${esc(p)}</p>`).join('');
   const q = $('[data-quote]'); if (q) { if (S.quote) q.textContent = `„${S.quote}“`; else q.remove(); }
-  $('.cv').innerHTML = (S.cv || []).map(c => {
+  $('.cv').innerHTML = byYear(S.cv || []).map(c => {
     const [main, role] = String(c.text || '').split(' – ');
     return `<li>${c.year ? `<b>${esc(c.year)}</b> ` : ''}${esc(main)}${role ? ` <em>– ${esc(role)}</em>` : ''}</li>`;
   }).join('');
@@ -149,7 +152,7 @@ function hang(sal, ART) {
 const catsUsed = () => CATS.filter(c => PROJ.some(p => p.category === c));
 const tiles = p => !!(p.works.length || p.video);
 function buildNav() {
-  const links = catsUsed().map(c => `<a href="#kat-${catSlug(c)}">${esc(c)}</a>`).join('') + '<a href="#autor">O autorovi</a><a href="#kontakt">Kontakt</a>';
+  const links = catsUsed().map(c => `<a href="#kat-${catSlug(c)}">${esc(c)}</a>`).join('') + '<a href="#cas">Časová osa</a><a href="#autor">O autorovi</a><a href="#kontakt">Kontakt</a>';
   $$('[data-catnav]').forEach(n => n.innerHTML = links);
 }
 function buildIndex() {
@@ -165,7 +168,7 @@ function buildIndex() {
 /* ---------- Kategorie: mřížka projektů (složek), pod ní realizace bez fotek ---------- */
 function showCat(slug) {
   const c = CATS.find(x => catSlug(x) === slug); if (!c) return false;
-  const sec = $('.cat'), L = PROJ.filter(p => p.category === c), T = L.filter(tiles), R = L.filter(p => !tiles(p));
+  const sec = $('.cat'), L = PROJ.filter(p => p.category === c), T = byYear(L.filter(tiles)), R = byYear(L.filter(p => !tiles(p)));
   $('.crumb', sec).innerHTML = `<a href="#uvod">Úvod</a> / ${esc(c)}`;
   $('.cat-title', sec).textContent = c;
   const g = $('.cat-grid', sec);
@@ -179,7 +182,7 @@ function showCat(slug) {
   const more = $('.cat-more', sec);
   more.hidden = !R.length;
   $('.cat-more-h', sec).textContent = T.length ? 'Další realizace' : 'Realizace';
-  $('.cat-list', sec).innerHTML = R.map(p => `<li><b>${esc(p.title)}</b><span>${esc([p.place, p.role].filter(Boolean).join(' · '))}</span>${p.link ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">web výstavy ↗</a>` : ''}</li>`).join('');
+  $('.cat-list', sec).innerHTML = R.map(p => `<li><b>${esc(p.title)}</b><span>${esc([p.year, p.place, p.role].filter(Boolean).join(' · '))}</span>${p.link ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">web výstavy ↗</a>` : ''}</li>`).join('');
   return true;
 }
 
@@ -203,6 +206,56 @@ function showProject(slug) {
   const nx = sib.length > 1 ? sib[(k + 1) % sib.length] : null;
   $('.fold-nav', sec).innerHTML = `<a class="back" href="#kat-${catSlug(p.category)}">← ${esc(p.category)}</a>${nx ? `<a class="fold-next" href="#projekt-${nx.slug}"><small>Další složka</small>${esc(nx.title)} →</a>` : ''}`;
   return true;
+}
+
+/* ---------- Časová osa: tvorba rok po roku (rail nahoře, roky se rozbalují) ---------- */
+function buildTime() {
+const sec = $('.time'); if (!sec) return;
+const Y = {};
+const slot = y => Y[y] = Y[y] || {items: [], works: []};
+const span = s => /\d{4}\D+\d{4}|dosud/.test(String(s || '')) ? String(s) : '';
+PROJ.forEach(p => { const y = yr(p); if (!y || p.slug === 'dalsi-dila') return;
+slot(y).items.push({kind: p.category, title: p.title, sub: [span(p.year), p.place, p.role].filter(Boolean).join(' · '), href: tiles(p) ? '#projekt-' + p.slug : '#kat-' + catSlug(p.category)}); });
+(SITE.milestones || []).forEach(m => { const y = yr(m); if (y) slot(y).items.push({kind: m.kind || 'Působení', title: m.text, sub: span(m.year)}); });
+WORKS.forEach(w => { const y = yr(w); if (y) slot(y).works.push(w); });
+const years = Object.keys(Y).map(Number).sort((a, b) => b - a);
+if (!years.length) return;
+const now = new Date().getFullYear(), a0 = Math.floor(Math.min(...years) / 10) * 10, a1 = Math.max(now, ...years), len = a1 - a0 || 1;
+let marks = '';
+for (let y = a0; y <= a1; y++) {
+const d = Y[y], x = ((y - a0) / len * 100).toFixed(2) + '%';
+marks += d ? `<button class="tr-dot" data-y="${y}" style="--x:${x};--n:${Math.min(6, d.items.length + Math.ceil(d.works.length / 4))}" aria-label="Rok ${y}"><span>${y}</span></button>`
+: `<i class="${y % 10 ? 'tr-tick' : 'tr-dec'}" style="--x:${x}">${y % 10 ? '' : '<span>' + y + '</span>'}</i>`;
+}
+const rail = $('.time-rail', sec), list = $('.time-list', sec);
+rail.innerHTML = `<div class="tr-line">${marks}</div>`;
+const word = n => n === 1 ? 'obraz' : n < 5 ? 'obrazy' : 'obrazů';
+list.innerHTML = years.map(y => {
+const d = Y[y], n = d.works.length, t = d.items.map(i => i.title);
+const sum = [t.slice(0, 2).join(' · ') + (t.length > 2 ? ' a další' : ''), n ? n + ' ' + word(n) : ''].filter(Boolean).join(' — ');
+return `<li class="ty" id="rok-${y}" data-y="${y}"><button class="ty-h" aria-expanded="false"><span class="ty-y">${y}</span><span class="ty-s">${esc(sum)}</span><i class="ty-i" aria-hidden="true"></i></button>
+<div class="ty-b"><div class="ty-in"><div class="ty-c">
+${d.items.length ? `<ul class="ty-items">${d.items.map(i => `<li><small>${esc(i.kind)}</small>${i.href ? `<a href="${i.href}">${esc(i.title)}</a>` : `<b>${esc(i.title)}</b>`}${i.sub ? `<span>${esc(i.sub)}</span>` : ''}</li>`).join('')}</ul>` : ''}
+${n ? `<div class="ty-works">${d.works.map((w, k) => `<button class="ty-w" data-open="${w.slug}" style="--t:${tiltOf(w)}deg;--k:${k}" aria-label="Otevřít: ${esc(w.title)}"><img alt="" data-src="${esc(w.images[0])}"><span>${esc(w.title)}</span></button>`).join('')}</div>` : ''}
+</div></div></div></li>`;
+}).join('');
+const sync = () => $$('.tr-dot', rail).forEach(b => b.classList.toggle('on', !!$('#rok-' + b.dataset.y + '.open', list)));
+const toggle = (li, on) => {
+on = on ?? !li.classList.contains('open');
+li.classList.toggle('open', on); $('.ty-h', li).setAttribute('aria-expanded', on);
+if (on) $$('img[data-src]', li).forEach(im => { safeImg(im, im.dataset.src, 500, '190px'); im.removeAttribute('data-src'); });
+sync();
+};
+list.addEventListener('click', e => { const h = e.target.closest('.ty-h'); if (h) toggle(h.parentElement); });
+rail.addEventListener('click', e => {
+const b = e.target.closest('.tr-dot'); if (!b) return;
+const li = $('#rok-' + b.dataset.y, list); toggle(li, true);
+li.scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block: 'start'});
+});
+toggle($('.ty', list), true);
+// rok, který je právě na obrazovce, se na ose zvýrazní
+const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; $$('.tr-dot', rail).forEach(b => b.classList.toggle('cur', b.dataset.y === e.target.dataset.y)); const c = $('.tr-dot.cur', rail); if (c && rail.scrollWidth > rail.clientWidth) rail.scrollTo({left: c.offsetLeft - rail.clientWidth / 2, behavior: 'smooth'}); }), {rootMargin: '-45% 0px -50% 0px'});
+$$('.ty', list).forEach(li => io.observe(li));
 }
 
 /* ---------- Úvod: video uvnitř loga, posunem se logo rozevře ---------- */
@@ -323,7 +376,7 @@ function render() {
   showImg();
   if (!$('.scale', V).hidden) showScale();
 }
-const peers = () => { const f = WORKS[cur].folder; const L = WORKS.filter(x => x.folder === f); return L.length ? L : WORKS; };
+const peers = () => { const f = WORKS[cur].folder; const L = byYear(WORKS.filter(x => x.folder === f)); return L.length ? L : WORKS; };
 const step = d => { const L = peers(), k = L.indexOf(WORKS[cur]); openWork(L[(k + d + L.length) % L.length].slug); };
 
 document.addEventListener('click', e => {
@@ -362,7 +415,7 @@ function route(first) {
     return;
   }
   let next = 'home', kind = 'home';
-  if (h === 'autor' || h === 'kontakt') { next = kind = h; }
+  if (h === 'autor' || h === 'kontakt' || h === 'cas') { next = kind = h; }
   else if (h.startsWith('kat-') && showCat(h.slice(4))) { next = h; kind = 'kategorie'; }
   else if (h.startsWith('projekt-') && showProject(h.slice(8))) { next = h; kind = 'projekt'; }
   const changed = next !== view || first;
@@ -372,7 +425,7 @@ function route(first) {
   const cat = kind === 'kategorie' ? h.slice(4) : kind === 'projekt' && curProj ? catSlug(curProj.category) : '';
   $$('.nav a, .mnav a').forEach(a => a.toggleAttribute('aria-current', a.getAttribute('href') === '#' + next || (cat && a.getAttribute('href') === '#kat-' + cat)));
   const nm = SITE.name || 'Pavel Koch';
-  document.title = kind === 'kategorie' ? `${$('.cat-title').textContent} – ${nm}` : kind === 'projekt' ? `${curProj.title} – ${nm}` : kind === 'autor' ? `O autorovi – ${nm}` : kind === 'kontakt' ? `Kontakt – ${nm}` : `${nm} – malba, výstavní architektura, scénografie`;
+  document.title = kind === 'kategorie' ? `${$('.cat-title').textContent} – ${nm}` : kind === 'projekt' ? `${curProj.title} – ${nm}` : kind === 'autor' ? `O autorovi – ${nm}` : kind === 'kontakt' ? `Kontakt – ${nm}` : kind === 'cas' ? `Časová osa – ${nm}` : `${nm} – malba, výstavní architektura, scénografie`;
   if (next !== 'home') { top.classList.remove('over'); if (changed) scrollTo({top: 0, behavior: 'instant'}); window._fx && window._fx(); return; }
   if (changed && !first) scrollTo({top: homeY, behavior: 'instant'});
   const s = $('.intro'); s && s._run && s._run();
